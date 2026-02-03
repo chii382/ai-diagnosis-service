@@ -6,6 +6,7 @@ import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import FeaturesSection from './components/FeaturesSection';
 import StepsSection from './components/StepsSection';
+import FAQSection from './components/FAQSection';
 import CTASection from './components/CTASection';
 import Footer from './components/Footer';
 
@@ -26,6 +27,7 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <StepsSection />
+      <FAQSection />
       <CTASection />
       <Footer />
 
