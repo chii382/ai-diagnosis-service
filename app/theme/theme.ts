@@ -35,33 +35,39 @@ const theme = createTheme({
       'sans-serif',
     ].join(','),
     h1: {
-      fontSize: '3rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
+      fontSize: '4.5rem',
+      fontWeight: 800,
+      lineHeight: 1.1,
+      letterSpacing: '-0.03em',
       '@media (max-width:600px)': {
-        fontSize: '2rem',
+        fontSize: '2.5rem',
+        letterSpacing: '-0.02em',
       },
     },
     h2: {
-      fontSize: '2.25rem',
+      fontSize: '2.5rem',
       fontWeight: 700,
       lineHeight: 1.3,
+      letterSpacing: '-0.01em',
       '@media (max-width:600px)': {
-        fontSize: '1.75rem',
+        fontSize: '1.875rem',
       },
     },
     h3: {
-      fontSize: '1.25rem',
+      fontSize: '1.5rem',
       fontWeight: 600,
       lineHeight: 1.4,
+      letterSpacing: '0em',
     },
     body1: {
       fontSize: '1rem',
-      lineHeight: 1.7,
+      lineHeight: 1.8,
+      fontWeight: 400,
     },
     body2: {
       fontSize: '0.875rem',
-      lineHeight: 1.6,
+      lineHeight: 1.7,
+      fontWeight: 400,
     },
   },
   shape: {

@@ -2,11 +2,11 @@
 
 import { Box } from '@mui/material';
 import { motion } from 'motion/react';
-import Header from './components/Header';
-import HeroSection from './components/HeroSection';
-import Footer from './components/Footer';
+import Header from '../components/Header';
+import FAQSection from '../components/FAQSection';
+import Footer from '../components/Footer';
 
-export default function Home() {
+export default function FAQPage() {
   return (
     <Box component="main" sx={{ background: '#fff7ed', minHeight: '100vh' }}>
       <Header />
@@ -15,7 +15,9 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
-        <HeroSection />
+        <Box sx={{ pt: 10 }}>
+          <FAQSection />
+        </Box>
       </motion.div>
       <Footer />
     </Box>

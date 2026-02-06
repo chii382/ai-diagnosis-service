@@ -43,8 +43,9 @@ export default function FAQSection() {
     <Box
       component="section"
       sx={{
-        py: { xs: 10, md: 14 },
-        background: '#ffffff',
+        pt: { xs: 4, md: 6 },
+        pb: { xs: 10, md: 14 },
+        background: 'transparent',
       }}
     >
       <Container maxWidth="md">

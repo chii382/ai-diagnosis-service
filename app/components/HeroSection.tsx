@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Container, Typography } from '@mui/material';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import CTAButton from './common/CTAButton';
 
@@ -9,14 +10,15 @@ export default function HeroSection() {
     <Box
       component="section"
       sx={{
-        minHeight: '100vh',
+        minHeight: { xs: 'auto', md: 'auto' },
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center',
         position: 'relative',
         overflow: 'hidden',
         background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)',
-        pt: { xs: 14, md: 12 },
-        pb: { xs: 8, md: 10 },
+        pt: { xs: 10, md: 8 },
+        pb: { xs: 4, md: 6 },
       }}
     >
       {/* 背景の装飾 */}
@@ -47,126 +49,125 @@ export default function HeroSection() {
         }}
       />
 
-      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Box
           sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             textAlign: 'center',
+            py: { xs: 2, md: 3 },
           }}
         >
-          {/* バッジ - サイズアップ */}
-          <Box
-            sx={{
-              display: 'inline-block',
-              px: { xs: 3, md: 4 },
-              py: { xs: 1.2, md: 1.5 },
-              mb: 4,
-              borderRadius: 50,
-              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)',
-              border: '2px solid rgba(249, 115, 22, 0.3)',
-              boxShadow: '0 4px 15px rgba(249, 115, 22, 0.1)',
+          {/* メインタイトル */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ 
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1]
             }}
           >
             <Typography
+              variant="h1"
+              component="h1"
               sx={{
-                color: '#ea580c',
-                fontWeight: 700,
-                fontSize: { xs: '1rem', md: '1.2rem' },
-                letterSpacing: '0.02em',
-              }}
-            >
-              ✨ たった5問・3分で完了
-            </Typography>
-          </Box>
-
-          {/* キャッチコピー */}
-          <Typography
-            variant="h1"
-            component="h1"
-            sx={{
-              mb: 3,
-              color: 'text.primary',
-              '& span': {
-                background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              },
-            }}
-          >
-            5問でわかる、あなたの<span>キャリア</span>
-          </Typography>
-
-          {/* サブコピー - インパクトアップ */}
-          <Box
-            sx={{
-              mb: 5,
-              py: 2,
-              px: 3,
-              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%)',
-              borderRadius: 3,
-              display: 'inline-block',
-            }}
-          >
-            <Typography
-              sx={{
-                color: '#6b5344',
-                fontSize: { xs: '1.25rem', md: '1.5rem' },
-                fontWeight: 600,
-                lineHeight: 1.6,
+                mb: { xs: 2.5, md: 3 },
+                color: 'text.primary',
+                fontSize: { xs: '2rem', md: '3.5rem' },
+                fontWeight: 800,
+                lineHeight: 1.15,
+                letterSpacing: '-0.03em',
                 '& span': {
                   color: '#f97316',
-                  fontWeight: 700,
+                },
+              }}
+            >
+              5問でわかる、<br />
+              あなたの<span>キャリア</span>
+            </Typography>
+          </motion.div>
+
+          {/* サブコピー */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.6,
+              delay: 0.3,
+              ease: [0.16, 1, 0.3, 1]
+            }}
+          >
+            <Typography
+              sx={{
+                color: 'text.secondary',
+                fontSize: { xs: '1rem', md: '1.25rem' },
+                fontWeight: 400,
+                lineHeight: 1.8,
+                mb: { xs: 4, md: 5 },
+                maxWidth: 600,
+                '& span': {
+                  color: '#f97316',
+                  fontWeight: 600,
                 },
               }}
             >
               <span>AI</span>があなたに最適な<br />
               <span>キャリアロードマップ</span>を提案します
             </Typography>
-          </Box>
+          </motion.div>
 
           {/* ヒーロー画像 */}
-          <Box
-            sx={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: 700,
-              mx: 'auto',
-              mb: 5,
-              borderRadius: 3,
-              overflow: 'hidden',
-              boxShadow: '0 20px 60px rgba(139, 90, 43, 0.2)',
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ 
+              duration: 0.8,
+              delay: 0.5,
+              ease: [0.16, 1, 0.3, 1]
             }}
           >
-            <Image
-              src="/hero-image.png"
-              alt="キャリアアップを目指すビジネスパーソン"
-              width={1200}
-              height={675}
-              style={{ 
-                width: '100%', 
-                height: 'auto',
-                display: 'block',
+            <Box
+              sx={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: { xs: '100%', md: 650 },
+                mb: { xs: 4, md: 5 },
+                borderRadius: 2,
+                overflow: 'hidden',
+                boxShadow: '0 20px 60px rgba(139, 90, 43, 0.15)',
               }}
-              priority
-            />
-          </Box>
+            >
+              <Image
+                src="/hero-image.png"
+                alt="キャリアアップを目指すビジネスパーソン"
+                width={1200}
+                height={675}
+                style={{ 
+                  width: '100%', 
+                  height: 'auto',
+                  display: 'block',
+                }}
+                priority
+              />
+            </Box>
+          </motion.div>
 
           {/* CTAボタン */}
-          <Box sx={{ mb: 2 }}>
-            <CTAButton variant="primary" size="large" />
-          </Box>
-
-          {/* 補足テキスト */}
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'text.secondary',
-              opacity: 0.7,
-              fontSize: '0.95rem',
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.6,
+              delay: 0.7,
+              ease: [0.16, 1, 0.3, 1]
             }}
           >
-            完全無料・登録不要
-          </Typography>
+            <Box>
+              <CTAButton variant="primary" size="large" />
+            </Box>
+          </motion.div>
         </Box>
       </Container>
     </Box>

@@ -4,6 +4,9 @@ import { Box, Container, Typography, Card, CardContent } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import FreeIcon from '@mui/icons-material/AttachMoney';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 const features = [
   {
@@ -24,6 +27,24 @@ const features = [
     description: 'あなただけのキャリアロードマップを作成。具体的な次のステップがわかります。',
     color: '#ea580c',
   },
+  {
+    icon: <FreeIcon sx={{ fontSize: 48 }} />,
+    title: '完全無料で利用可能',
+    description: '一切の費用はかかりません。高品質なキャリア診断を無料でお試しいただけます。',
+    color: '#f97316',
+  },
+  {
+    icon: <PersonAddIcon sx={{ fontSize: 48 }} />,
+    title: '登録不要・すぐに始められる',
+    description: 'メール登録や会員登録は不要。今すぐ診断を始めて、すぐに結果を確認できます。',
+    color: '#f59e0b',
+  },
+  {
+    icon: <VerifiedIcon sx={{ fontSize: 48 }} />,
+    title: '専門家監修の信頼性',
+    description: 'キャリアカウンセラーや人事の専門家が監修。信頼できる診断結果をお届けします。',
+    color: '#ea580c',
+  },
 ];
 
 export default function FeaturesSection() {
@@ -31,40 +52,31 @@ export default function FeaturesSection() {
     <Box
       component="section"
       sx={{
-        py: { xs: 10, md: 14 },
-        background: '#ffffff',
+        py: { xs: 8, md: 10 },
+        background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
       }}
     >
       <Container maxWidth="lg">
         {/* セクションタイトル */}
-        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
           <Typography
             variant="h2"
             component="h2"
             sx={{
               mb: 2,
-              color: 'text.primary',
+              color: 'white',
+              fontSize: { xs: '1.5rem', md: '2rem' },
             }}
           >
-            選ばれる<Box component="span" sx={{ color: '#f97316' }}>3つ</Box>の理由
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: 'text.secondary',
-              maxWidth: 500,
-              mx: 'auto',
-            }}
-          >
-            キャリア診断AIは、あなたのキャリア選択をサポートします
+            選ばれる<Box component="span" sx={{ color: 'rgba(255, 255, 255, 0.95)' }}>6つ</Box>の理由
           </Typography>
         </Box>
 
         {/* 特徴カード */}
         <Box
           sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
             gap: 4,
             justifyContent: 'center',
           }}
@@ -73,37 +85,37 @@ export default function FeaturesSection() {
             <Box
               key={index}
               sx={{
-                width: { xs: '100%', md: 'calc(33.333% - 22px)' },
+                width: '100%',
                 maxWidth: { md: 400 },
+                mx: 'auto',
               }}
             >
               <Card
                 sx={{
                   height: '100%',
-                  textAlign: 'center',
+                  textAlign: 'left',
                   transition: 'all 0.3s ease',
-                  border: '1px solid rgba(139, 90, 43, 0.08)',
-                  background: 'linear-gradient(180deg, #ffffff 0%, #fffbf5 100%)',
+                  border: 'none',
+                  background: '#ffffff',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
                   '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 20px 40px rgba(249, 115, 22, 0.15)',
-                    borderColor: 'rgba(249, 115, 22, 0.2)',
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
                   },
                 }}
               >
                 <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                   <Box
                     sx={{
-                      width: 80,
-                      height: 80,
+                      width: 60,
+                      height: 60,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderRadius: '50%',
                       background: `linear-gradient(135deg, ${feature.color}15 0%, ${feature.color}10 100%)`,
                       color: feature.color,
-                      mx: 'auto',
-                      mb: 3,
+                      mb: 2.5,
                     }}
                   >
                     {feature.icon}
@@ -112,8 +124,10 @@ export default function FeaturesSection() {
                     variant="h3"
                     component="h3"
                     sx={{
-                      mb: 2,
+                      mb: 1.5,
                       color: 'text.primary',
+                      fontSize: { xs: '1.125rem', md: '1.25rem' },
+                      fontWeight: 600,
                     }}
                   >
                     {feature.title}
@@ -122,7 +136,8 @@ export default function FeaturesSection() {
                     variant="body1"
                     sx={{
                       color: 'text.secondary',
-                      lineHeight: 1.8,
+                      lineHeight: 1.7,
+                      fontSize: { xs: '0.875rem', md: '0.95rem' },
                     }}
                   >
                     {feature.description}
