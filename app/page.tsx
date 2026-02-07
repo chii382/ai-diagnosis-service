@@ -4,6 +4,11 @@ import { Box } from '@mui/material';
 import { motion } from 'motion/react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
+import FeaturesSection from './components/FeaturesSection';
+import StepsSection from './components/StepsSection';
+import PricingSection from './components/PricingSection';
+import FAQSection from './components/FAQSection';
+import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 
 export default function Home() {
@@ -16,6 +21,11 @@ export default function Home() {
         transition={{ duration: 0.6 }}
       >
         <HeroSection />
+        <FeaturesSection />
+        <StepsSection />
+        <PricingSection />
+        <FAQSection />
+        <ContactSection />
       </motion.div>
       <Footer />
     </Box>

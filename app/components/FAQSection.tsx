@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { motion } from 'motion/react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const faqs = [
@@ -39,41 +41,73 @@ const faqs = [
 ];
 
 export default function FAQSection() {
+  const [animationKey, setAnimationKey] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleHashChange = () => {
+      if (window.location.hash === '#faq') {
+        // すぐにアニメーションをリセット（スクロール開始時）
+        setAnimationKey(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   return (
     <Box
       component="section"
+      id="faq"
       sx={{
-        pt: { xs: 4, md: 6 },
+        pt: { xs: 6, md: 8 },
         pb: { xs: 10, md: 14 },
         background: 'transparent',
       }}
     >
       <Container maxWidth="md">
         {/* セクションタイトル */}
-        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              mb: 2,
-              color: 'text.primary',
-            }}
-          >
-            よくある<Box component="span" sx={{ color: '#f97316' }}>質問</Box>
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: 'text.secondary',
-              maxWidth: 500,
-              mx: 'auto',
-            }}
-          >
-            診断に関するよくある質問と回答をご紹介します
-          </Typography>
-        </Box>
+        <motion.div
+          key={`title-${animationKey}`}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-100px 0px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+            <Typography
+              variant="h2"
+              component="h2"
+              sx={{
+                mb: 2,
+                color: 'text.primary',
+              }}
+            >
+              よくある<Box component="span" sx={{ color: '#f97316' }}>質問</Box>
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'text.secondary',
+                maxWidth: 500,
+                mx: 'auto',
+              }}
+            >
+              診断に関するよくある質問と回答をご紹介します
+            </Typography>
+          </Box>
+        </motion.div>
 
         {/* FAQアコーディオン */}
+        <motion.div
+          key={`faq-${animationKey}`}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-100px 0px' }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
         <Box sx={{ maxWidth: 800, mx: 'auto' }}>
           {faqs.map((faq, index) => (
             <Accordion
@@ -138,6 +172,7 @@ export default function FAQSection() {
             </Accordion>
           ))}
         </Box>
+        </motion.div>
       </Container>
     </Box>
   );

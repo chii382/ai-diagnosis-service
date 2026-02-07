@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Card, CardContent } from '@mui/material';
+import { motion } from 'motion/react';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
@@ -48,31 +50,64 @@ const features = [
 ];
 
 export default function FeaturesSection() {
+  const [animationKey, setAnimationKey] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleHashChange = () => {
+      if (window.location.hash === '#features') {
+        // すぐにアニメーションをリセット（スクロール開始時）
+        setAnimationKey(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   return (
     <Box
       component="section"
+      id="features"
       sx={{
-        py: { xs: 8, md: 10 },
+        pt: { xs: 6, md: 8 },
+        pb: { xs: 8, md: 10 },
         background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
       }}
     >
       <Container maxWidth="lg">
         {/* セクションタイトル */}
-        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              mb: 2,
-              color: 'white',
-              fontSize: { xs: '1.5rem', md: '2rem' },
-            }}
-          >
-            選ばれる<Box component="span" sx={{ color: 'rgba(255, 255, 255, 0.95)' }}>6つ</Box>の理由
-          </Typography>
-        </Box>
+        <motion.div
+          key={`title-${animationKey}`}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-100px 0px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
+            <Typography
+              variant="h2"
+              component="h2"
+              sx={{
+                mb: 2,
+                color: 'white',
+                fontSize: { xs: '1.5rem', md: '2rem' },
+              }}
+            >
+              選ばれる<Box component="span" sx={{ color: 'rgba(255, 255, 255, 0.95)' }}>6つ</Box>の理由
+            </Typography>
+          </Box>
+        </motion.div>
 
         {/* 特徴カード */}
+        <motion.div
+          key={`cards-${animationKey}`}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-100px 0px' }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
         <Box
           sx={{
             display: 'grid',
@@ -147,6 +182,7 @@ export default function FeaturesSection() {
             </Box>
           ))}
         </Box>
+        </motion.div>
       </Container>
     </Box>
   );
