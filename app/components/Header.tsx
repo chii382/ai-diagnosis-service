@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { AppBar, Toolbar, Typography, Button, Container, Box, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -20,6 +23,7 @@ const navItems = [
 export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session } = useSession();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -148,6 +152,63 @@ export default function Header() {
             </Link>
           </ListItem>
         ))}
+        {session ? (
+          <>
+            <ListItem disablePadding>
+              <Link href="/dashboard" style={{ textDecoration: 'none', width: '100%' }}>
+                <ListItemButton
+                  sx={{
+                    color: 'rgba(139, 90, 43, 0.8)',
+                    fontWeight: 500,
+                    '&:hover': {
+                      backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                      color: '#f97316',
+                    },
+                  }}
+                >
+                  <ListItemText primary="ダッシュボード" />
+                </ListItemButton>
+              </Link>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  signOut({ callbackUrl: '/' });
+                  setMobileOpen(false);
+                }}
+                sx={{
+                  color: '#dc2626',
+                  fontWeight: 500,
+                  '&:hover': {
+                    backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                    color: '#b91c1c',
+                  },
+                }}
+              >
+                <LogoutIcon sx={{ mr: 1 }} />
+                <ListItemText primary="ログアウト" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        ) : (
+          <ListItem disablePadding>
+            <Link href="/auth/signin" style={{ textDecoration: 'none', width: '100%' }}>
+              <ListItemButton
+                sx={{
+                  color: '#f97316',
+                  fontWeight: 600,
+                  '&:hover': {
+                    backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                    color: '#ea580c',
+                  },
+                }}
+              >
+                <LoginIcon sx={{ mr: 1 }} />
+                <ListItemText primary="ログイン" />
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        )}
       </List>
     </Box>
   );
@@ -215,6 +276,64 @@ export default function Header() {
                   </Button>
                 </Link>
               ))}
+              {session ? (
+                <>
+                  <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+                    <Button
+                      sx={{
+                        color: 'rgba(139, 90, 43, 0.8)',
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                        textTransform: 'none',
+                        px: 2,
+                        '&:hover': {
+                          color: '#f97316',
+                          backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                        },
+                      }}
+                    >
+                      ダッシュボード
+                    </Button>
+                  </Link>
+                  <Button
+                    startIcon={<LogoutIcon />}
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    sx={{
+                      color: '#dc2626',
+                      fontWeight: 500,
+                      fontSize: '0.95rem',
+                      textTransform: 'none',
+                      px: 2,
+                      '&:hover': {
+                        color: '#b91c1c',
+                        backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                      },
+                    }}
+                  >
+                    ログアウト
+                  </Button>
+                </>
+              ) : (
+                <Link href="/auth/signin" style={{ textDecoration: 'none' }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<LoginIcon />}
+                    sx={{
+                      background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+                      color: 'white',
+                      fontWeight: 600,
+                      fontSize: '0.95rem',
+                      textTransform: 'none',
+                      px: 2,
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
+                      },
+                    }}
+                  >
+                    ログイン
+                  </Button>
+                </Link>
+              )}
             </Box>
 
             {/* モバイルメニューボタン */}
