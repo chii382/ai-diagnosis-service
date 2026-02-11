@@ -1,11 +1,22 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
+// 環境変数の検証
+if (!process.env.GOOGLE_CLIENT_ID) {
+  throw new Error('GOOGLE_CLIENT_ID is not set');
+}
+if (!process.env.GOOGLE_CLIENT_SECRET) {
+  throw new Error('GOOGLE_CLIENT_SECRET is not set');
+}
+if (!process.env.AUTH_SECRET) {
+  throw new Error('AUTH_SECRET is not set');
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   session: {
