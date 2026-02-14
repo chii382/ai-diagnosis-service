@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Box, Container, Typography, Button, Card, CardContent, CircularProgress } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 
@@ -35,30 +36,41 @@ function SignInForm() {
         >
           <CardContent>
             <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                <Image
-                  src="/images/compass-logo.png"
-                  alt="AI CAREER COMPASS"
-                  width={80}
-                  height={80}
-                  style={{ objectFit: 'contain' }}
-                  unoptimized
-                />
-              </Box>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  fontWeight: 700,
-                  mb: 2,
-                  background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+              <Link
+                href="/"
+                style={{
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  cursor: 'pointer',
                 }}
               >
-                AI CAREER COMPASS
-              </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                  <Image
+                    src="/images/compass-logo.png"
+                    alt="AI CAREER COMPASS"
+                    width={80}
+                    height={80}
+                    style={{ objectFit: 'contain' }}
+                    unoptimized
+                  />
+                </Box>
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{
+                    fontWeight: 700,
+                    mb: 2,
+                    background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  AI CAREER COMPASS
+                </Typography>
+              </Link>
               <Typography variant="body1" sx={{ color: '#5c4033', mb: 4 }}>
                 会員専用機能をご利用いただくには、Googleアカウントでログインしてください
               </Typography>

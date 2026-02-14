@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Box, Container, Typography, Card, CardContent, Avatar, Button, CircularProgress } from '@mui/material';
+import { Box, Container, Typography, Card, CardContent, Avatar, Button, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [profileData, setProfileData] = useState<ProfileData>({ name: '', image: '' });
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -186,7 +187,7 @@ export default function DashboardPage() {
               <Button
                 variant="outlined"
                 startIcon={<LogoutIcon />}
-                onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+                onClick={() => setLogoutDialogOpen(true)}
                 sx={{
                   borderColor: '#dc2626',
                   color: '#dc2626',
@@ -204,6 +205,22 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </Container>
+
+      {/* ログアウト確認ダイアログ */}
+      <Dialog open={logoutDialogOpen} onClose={() => setLogoutDialogOpen(false)}>
+        <DialogTitle>ログアウトの確認</DialogTitle>
+        <DialogContent>
+          <Typography>ログアウトします。よろしいですか？</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLogoutDialogOpen(false)} color="inherit">
+            キャンセル
+          </Button>
+          <Button onClick={() => { signOut({ callbackUrl: '/auth/signin' }); setLogoutDialogOpen(false); }} color="error" variant="contained">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

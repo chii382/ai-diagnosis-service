@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { AppBar, Toolbar, Typography, Button, Container, Box, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, Box, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import Image from 'next/image';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,7 +23,16 @@ const navItems = [
 export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const { data: session } = useSession();
+
+  const handleLogoutClick = () => setLogoutDialogOpen(true);
+  const handleLogoutConfirm = () => {
+    signOut({ callbackUrl: '/' });
+    setLogoutDialogOpen(false);
+    setMobileOpen(false);
+  };
+  const handleLogoutCancel = () => setLogoutDialogOpen(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -173,7 +182,7 @@ export default function Header() {
             <ListItem disablePadding>
               <ListItemButton
                 onClick={() => {
-                  signOut({ callbackUrl: '/' });
+                  handleLogoutClick();
                   setMobileOpen(false);
                 }}
                 sx={{
@@ -338,7 +347,7 @@ export default function Header() {
                   </Link>
                   <Button
                     startIcon={<LogoutIcon />}
-                    onClick={() => signOut({ callbackUrl: '/' })}
+                    onClick={handleLogoutClick}
                     sx={{
                       color: '#dc2626',
                       fontWeight: 500,
@@ -410,6 +419,22 @@ export default function Header() {
       >
         {drawer}
       </Drawer>
+
+      {/* ログアウト確認ダイアログ */}
+      <Dialog open={logoutDialogOpen} onClose={handleLogoutCancel}>
+        <DialogTitle>ログアウトの確認</DialogTitle>
+        <DialogContent>
+          <Typography>ログアウトします。よろしいですか？</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLogoutCancel} color="inherit">
+            キャンセル
+          </Button>
+          <Button onClick={handleLogoutConfirm} color="error" variant="contained">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

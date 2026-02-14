@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Box, Container, Typography, Card, CardContent, Avatar, TextField, Button, CircularProgress, Alert } from '@mui/material';
+import { Box, Container, Typography, Card, CardContent, Avatar, TextField, Button, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import SaveIcon from '@mui/icons-material/Save';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -26,6 +26,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -321,7 +322,7 @@ export default function ProfilePage() {
                 <Button
                   variant="outlined"
                   startIcon={<LogoutIcon />}
-                  onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+                  onClick={() => setLogoutDialogOpen(true)}
                   sx={{
                     borderColor: '#dc2626',
                     color: '#dc2626',
@@ -340,6 +341,22 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </Container>
+
+      {/* ログアウト確認ダイアログ */}
+      <Dialog open={logoutDialogOpen} onClose={() => setLogoutDialogOpen(false)}>
+        <DialogTitle>ログアウトの確認</DialogTitle>
+        <DialogContent>
+          <Typography>ログアウトします。よろしいですか？</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLogoutDialogOpen(false)} color="inherit">
+            キャンセル
+          </Button>
+          <Button onClick={() => { signOut({ callbackUrl: '/auth/signin' }); setLogoutDialogOpen(false); }} color="error" variant="contained">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
