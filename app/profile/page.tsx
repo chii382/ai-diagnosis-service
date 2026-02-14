@@ -25,16 +25,34 @@ export default function ProfilePage() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/auth/signin');
-    } else if (session?.user) {
-      setProfileData({
-        name: session.user.name || '',
-        email: session.user.email || '',
-        image: session.user.image || '',
-      });
+    } else if (status === 'authenticated' && session?.user) {
+      setProfileLoaded(false);
+      const fetchProfile = async () => {
+        try {
+          const res = await fetch('/api/user/profile', { method: 'GET' });
+          if (!res.ok) throw new Error('Fetch failed');
+          const data = await res.json();
+          setProfileData({
+            name: data.name || session.user?.name || '',
+            email: data.email || session.user?.email || '',
+            image: data.image || session.user?.image || '',
+          });
+        } catch (e) {
+          setProfileData({
+            name: session.user?.name || '',
+            email: session.user?.email || '',
+            image: session.user?.image || '',
+          });
+        } finally {
+          setProfileLoaded(true);
+        }
+      };
+      fetchProfile();
     }
   }, [status, session, router]);
 
@@ -58,6 +76,7 @@ export default function ProfilePage() {
         },
         body: JSON.stringify({
           name: profileData.name,
+          image: profileData.image ?? null,
         }),
       });
 
@@ -66,11 +85,11 @@ export default function ProfilePage() {
       }
 
       const data = await response.json();
-      setMessage({ type: 'success', text: 'プロフィールを更新しました' });
-      // セッションを更新するためにページをリロード
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      setProfileData((prev) => ({
+        ...prev,
+        name: data.name || prev.name,
+      }));
+      router.push('/dashboard');
     } catch (error) {
       setMessage({ type: 'error', text: error instanceof Error ? error.message : 'エラーが発生しました' });
     } finally {
@@ -97,6 +116,26 @@ export default function ProfilePage() {
     return null;
   }
 
+  if (!profileLoaded) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 100%)',
+          pt: 10,
+          pb: 6,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress sx={{ color: '#f97316' }} />
+        </Container>
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -115,7 +154,11 @@ export default function ProfilePage() {
           }}
         >
           <CardContent>
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 4 }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{ fontWeight: 700, mb: 4, color: '#3d2c1e' }}
+            >
               プロフィール
             </Typography>
 
@@ -138,9 +181,83 @@ export default function ProfilePage() {
               >
                 {!profileData.image && !session.user?.image && <PersonIcon sx={{ fontSize: 60 }} />}
               </Avatar>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography variant="body2" sx={{ color: '#3d2c1e' }}>
                 アバターはGoogleアカウントから取得されます
               </Typography>
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    borderColor: '#f97316',
+                    color: '#f97316',
+                    '&:hover': {
+                      borderColor: '#ea580c',
+                      backgroundColor: 'rgba(249, 115, 22, 0.04)',
+                    },
+                  }}
+                >
+                  アバター画像を変更
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      // ファイルを Data URL に変換してプレビュー＆保存
+                      const reader = new FileReader();
+                      reader.onloadend = async () => {
+                        const result = reader.result;
+                        if (typeof result !== 'string') return;
+
+                        // 画面プレビュー更新
+                        setProfileData((prev) => ({
+                          ...prev,
+                          image: result,
+                        }));
+
+                        setLoading(true);
+                        setMessage(null);
+                        try {
+                          const response = await fetch('/api/user/profile', {
+                            method: 'PUT',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                              name: profileData.name,
+                              image: result,
+                            }),
+                          });
+
+                          if (!response.ok) {
+                            throw new Error('アバターの更新に失敗しました');
+                          }
+
+                          const data = await response.json();
+                          setProfileData((prev) => ({
+                            ...prev,
+                            image: data.image || result,
+                          }));
+                          setMessage({ type: 'success', text: 'アバターを更新しました' });
+                        } catch (error) {
+                          setMessage({
+                            type: 'error',
+                            text: error instanceof Error ? error.message : 'アバター更新中にエラーが発生しました',
+                          });
+                        } finally {
+                          setLoading(false);
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                  />
+                </Button>
+              </Box>
             </Box>
 
             <form onSubmit={handleSubmit}>

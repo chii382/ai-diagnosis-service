@@ -5,12 +5,12 @@ import SessionProvider from './providers/SessionProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '5問でわかる、あなたのキャリア | キャリア診断AI',
+  title: '5問でわかる、あなたのキャリア | AI CAREER COMPASS',
   description:
     'AIがあなたに最適なキャリアロードマップを提案します。たった5問・3分で完了。完全無料・登録不要で診断できます。',
   keywords: 'キャリア診断, AI, キャリアロードマップ, 転職, 就活, キャリア相談',
   openGraph: {
-    title: '5問でわかる、あなたのキャリア | キャリア診断AI',
+    title: '5問でわかる、あなたのキャリア | AI CAREER COMPASS',
     description: 'AIがあなたに最適なキャリアロードマップを提案します。',
     type: 'website',
   },

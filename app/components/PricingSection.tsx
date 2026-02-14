@@ -95,7 +95,7 @@ export default function PricingSection() {
               component="h2"
               sx={{
                 mb: 2,
-                color: 'text.primary',
+                color: '#3d2c1e',
               }}
             >
               料金<Box component="span" sx={{ color: '#f97316' }}>プラン</Box>
@@ -103,7 +103,7 @@ export default function PricingSection() {
             <Typography
               variant="body1"
               sx={{
-                color: 'text.secondary',
+                color: '#5c4033',
                 maxWidth: 500,
                 mx: 'auto',
               }}
@@ -191,7 +191,7 @@ export default function PricingSection() {
                     component="h3"
                     sx={{
                       mb: 1,
-                      color: 'text.primary',
+                      color: '#3d2c1e',
                       fontSize: { xs: '1.5rem', md: '1.75rem' },
                     }}
                   >
@@ -210,7 +210,7 @@ export default function PricingSection() {
                     >
                       {plan.price}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant="body2" sx={{ color: '#5c4033' }}>
                       {plan.period}
                     </Typography>
                   </Box>
@@ -237,7 +237,7 @@ export default function PricingSection() {
                         <Typography
                           variant="body2"
                           sx={{
-                            color: 'text.primary',
+                            color: '#3d2c1e',
                             fontSize: { xs: '0.875rem', md: '0.9375rem' },
                           }}
                         >
@@ -250,7 +250,7 @@ export default function PricingSection() {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: 'text.secondary',
+                      color: '#5c4033',
                       fontStyle: 'italic',
                       fontSize: { xs: '0.75rem', md: '0.8125rem' },
                       mt: 'auto',

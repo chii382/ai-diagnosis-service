@@ -31,7 +31,7 @@ export default function Footer() {
               fontWeight: 500,
             }}
           >
-            キャリア診断AI
+            AI CAREER COMPASS
           </Typography>
 
           <Typography
@@ -40,7 +40,7 @@ export default function Footer() {
               color: 'rgba(255, 255, 255, 0.4)',
             }}
           >
-            © {currentYear} キャリア診断AI All rights reserved.
+            © {currentYear} AI CAREER COMPASS All rights reserved.
           </Typography>
         </Box>
       </Container>

@@ -64,7 +64,7 @@ export default function ContactSection() {
               component="h2"
               sx={{
                 mb: 2,
-                color: 'text.primary',
+                color: '#3d2c1e',
               }}
             >
               お<Box component="span" sx={{ color: '#f97316' }}>問い合わせ</Box>
@@ -72,7 +72,7 @@ export default function ContactSection() {
             <Typography
               variant="body1"
               sx={{
-                color: 'text.secondary',
+                color: '#5c4033',
                 maxWidth: 500,
                 mx: 'auto',
               }}

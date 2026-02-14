@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { AppBar, Toolbar, Typography, Button, Container, Box, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import Image from 'next/image';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -12,8 +12,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
-  { label: 'トップ', path: '/#' },
-  { label: '特徴', path: '/#features' },
+  { label: 'こんなお悩みに', path: '/#pain' },
+  { label: '選ばれる理由', path: '/#features' },
   { label: '診断の流れ', path: '/#steps' },
   { label: '料金', path: '/#pricing' },
   { label: 'よくある質問', path: '/#faq' },
@@ -224,34 +224,73 @@ export default function Header() {
           borderBottom: '1px solid rgba(139, 90, 43, 0.08)',
         }}
       >
-        <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ justifyContent: 'space-between', py: 1 }}>
+        <Container
+          maxWidth="xl"
+          sx={{
+            px: { xs: 1, md: 1.5 },
+          }}
+        >
+          <Toolbar
+            disableGutters
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              py: 1,
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }} onClick={handleLogoClick}>
-                <AutoAwesomeIcon
+                <Box
                   sx={{
-                    color: '#f97316',
-                    fontSize: 28,
+                    width: 40,
+                    height: 40,
+                    position: 'relative',
                   }}
-                />
+                >
+                  <Image
+                    src="/images/compass-logo.png"
+                    alt="AI CAREER COMPASS ロゴ"
+                    fill
+                    sizes="32px"
+                    style={{ objectFit: 'contain' }}
+                  />
+                </Box>
                 <Typography
                   variant="h6"
                   component="div"
                   sx={{
                     fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    fontSize: '1.1rem',
+                    whiteSpace: 'nowrap',
                     background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
                 >
-                  キャリア診断AI
+                  AI CAREER COMPASS
                 </Typography>
               </Link>
             </Box>
 
-            {/* デスクトップナビゲーション */}
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
+            {/* 右側：デスクトップナビ + モバイルハンバーガー（右寄せ） */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                gap: 0.125,
+                ml: 'auto',
+              }}
+            >
+              <Box
+                sx={{
+                  display: { xs: 'none', md: 'flex' },
+                  alignItems: 'center',
+                  gap: 0.125,
+                }}
+              >
               {navItems.map((item) => (
                 <Link
                   key={item.path}
@@ -265,7 +304,8 @@ export default function Header() {
                       fontWeight: 500,
                       fontSize: '0.95rem',
                       textTransform: 'none',
-                      px: 2,
+                      px: 2.5,
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         color: '#f97316',
                         backgroundColor: 'rgba(249, 115, 22, 0.08)',
@@ -285,7 +325,8 @@ export default function Header() {
                         fontWeight: 500,
                         fontSize: '0.95rem',
                         textTransform: 'none',
-                        px: 2,
+                        px: 2.5,
+                        whiteSpace: 'nowrap',
                         '&:hover': {
                           color: '#f97316',
                           backgroundColor: 'rgba(249, 115, 22, 0.08)',
@@ -303,7 +344,8 @@ export default function Header() {
                       fontWeight: 500,
                       fontSize: '0.95rem',
                       textTransform: 'none',
-                      px: 2,
+                      px: 2.5,
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         color: '#b91c1c',
                         backgroundColor: 'rgba(220, 38, 38, 0.08)',
@@ -324,7 +366,8 @@ export default function Header() {
                       fontWeight: 600,
                       fontSize: '0.95rem',
                       textTransform: 'none',
-                      px: 2,
+                      px: 3.5,
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
                       },
@@ -334,18 +377,17 @@ export default function Header() {
                   </Button>
                 </Link>
               )}
+              </Box>
+              {/* モバイルメニューボタン（右寄せ） */}
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerToggle}
+                sx={{ display: { md: 'none' }, color: 'rgba(139, 90, 43, 0.8)' }}
+              >
+                <MenuIcon />
+              </IconButton>
             </Box>
-
-            {/* モバイルメニューボタン */}
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ display: { md: 'none' }, color: 'rgba(139, 90, 43, 0.8)' }}
-            >
-              <MenuIcon />
-            </IconButton>
           </Toolbar>
         </Container>
       </AppBar>

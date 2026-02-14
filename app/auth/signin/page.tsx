@@ -3,9 +3,9 @@
 import { Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { Box, Container, Typography, Button, Card, CardContent, CircularProgress } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 function SignInForm() {
   const searchParams = useSearchParams();
@@ -35,13 +35,16 @@ function SignInForm() {
         >
           <CardContent>
             <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <AutoAwesomeIcon
-                sx={{
-                  color: '#f97316',
-                  fontSize: 48,
-                  mb: 2,
-                }}
-              />
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                <Image
+                  src="/images/compass-logo.png"
+                  alt="AI CAREER COMPASS"
+                  width={80}
+                  height={80}
+                  style={{ objectFit: 'contain' }}
+                  unoptimized
+                />
+              </Box>
               <Typography
                 variant="h4"
                 component="h1"
@@ -54,9 +57,9 @@ function SignInForm() {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                キャリア診断AI
+                AI CAREER COMPASS
               </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
+              <Typography variant="body1" sx={{ color: '#5c4033', mb: 4 }}>
                 会員専用機能をご利用いただくには、Googleアカウントでログインしてください
               </Typography>
             </Box>

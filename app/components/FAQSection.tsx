@@ -82,7 +82,7 @@ export default function FAQSection() {
               component="h2"
               sx={{
                 mb: 2,
-                color: 'text.primary',
+                color: '#3d2c1e',
               }}
             >
               よくある<Box component="span" sx={{ color: '#f97316' }}>質問</Box>
@@ -90,7 +90,7 @@ export default function FAQSection() {
             <Typography
               variant="body1"
               sx={{
-                color: 'text.secondary',
+                color: '#5c4033',
                 maxWidth: 500,
                 mx: 'auto',
               }}
@@ -145,7 +145,7 @@ export default function FAQSection() {
                 <Typography
                   sx={{
                     fontWeight: 600,
-                    color: 'text.primary',
+                    color: '#3d2c1e',
                     fontSize: { xs: '0.95rem', md: '1rem' },
                   }}
                 >
@@ -161,7 +161,7 @@ export default function FAQSection() {
               >
                 <Typography
                   sx={{
-                    color: 'text.secondary',
+                    color: '#5c4033',
                     lineHeight: 1.8,
                     fontSize: { xs: '0.9rem', md: '1rem' },
                   }}

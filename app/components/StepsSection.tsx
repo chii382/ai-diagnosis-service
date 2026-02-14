@@ -115,7 +115,7 @@ export default function StepsSection() {
               component="h2"
               sx={{
                 mb: 2,
-                color: 'text.primary',
+                color: '#3d2c1e',
               }}
             >
               診断の<Box component="span" sx={{ color: '#f97316' }}>流れ</Box>
@@ -123,7 +123,7 @@ export default function StepsSection() {
             <Typography
               variant="body1"
               sx={{
-                color: 'text.secondary',
+                color: '#5c4033',
                 maxWidth: 500,
                 mx: 'auto',
               }}
@@ -286,7 +286,7 @@ export default function StepsSection() {
                 component="h3"
                 sx={{
                   mb: { xs: 2, md: 2.5 },
-                  color: 'text.primary',
+                  color: '#3d2c1e',
                   fontSize: { xs: '1.375rem', md: '1.75rem' },
                   fontWeight: 700,
                   letterSpacing: '-0.02em',
@@ -297,7 +297,7 @@ export default function StepsSection() {
               <Typography
                 variant="body1"
                 sx={{
-                  color: 'text.secondary',
+                  color: '#5c4033',
                   fontSize: { xs: '1rem', md: '1.0625rem' },
                   lineHeight: 1.8,
                 }}

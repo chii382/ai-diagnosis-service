@@ -19,8 +19,8 @@ const theme = createTheme({
       paper: '#ffffff',
     },
     text: {
-      primary: '#3d2c1e', // 温かみのあるダークブラウン
-      secondary: '#6b5344', // ミディアムブラウン
+      primary: '#3d2c1e',
+      secondary: '#5c4033', // 本文・補足文用
     },
   },
   typography: {
@@ -35,6 +35,7 @@ const theme = createTheme({
       'sans-serif',
     ].join(','),
     h1: {
+      color: '#3d2c1e',
       fontSize: '4.5rem',
       fontWeight: 800,
       lineHeight: 1.1,
@@ -45,6 +46,7 @@ const theme = createTheme({
       },
     },
     h2: {
+      color: '#3d2c1e',
       fontSize: '2.5rem',
       fontWeight: 700,
       lineHeight: 1.3,
@@ -54,26 +56,58 @@ const theme = createTheme({
       },
     },
     h3: {
+      color: '#3d2c1e',
       fontSize: '1.5rem',
       fontWeight: 600,
       lineHeight: 1.4,
       letterSpacing: '0em',
     },
+    h4: {
+      color: '#3d2c1e',
+    },
+    h5: {
+      color: '#3d2c1e',
+    },
+    h6: {
+      color: '#3d2c1e',
+    },
     body1: {
+      color: '#3d2c1e',
       fontSize: '1rem',
       lineHeight: 1.8,
       fontWeight: 400,
     },
     body2: {
+      color: '#5c4033',
       fontSize: '0.875rem',
       lineHeight: 1.7,
       fontWeight: 400,
+    },
+    subtitle1: {
+      color: '#3d2c1e',
+    },
+    subtitle2: {
+      color: '#5c4033',
     },
   },
   shape: {
     borderRadius: 12,
   },
   components: {
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: '#3d2c1e',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        input: {
+          color: '#3d2c1e',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

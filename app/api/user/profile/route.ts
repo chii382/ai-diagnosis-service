@@ -31,8 +31,6 @@ function getMongoClient(): Promise<MongoClient> {
   return clientPromise!;
 }
 
-const dbName = process.env.MONGODB_DB_NAME || 'auth';
-
 export async function GET(request: NextRequest) {
   try {
     const session = await auth();
@@ -42,7 +40,9 @@ export async function GET(request: NextRequest) {
     }
 
     const client = await getMongoClient();
-    const db = client.db(dbName);
+    // NextAuth の MongoDB Adapter と同じデータベースを使うため
+    // 接続文字列で指定されたデフォルトDBをそのまま利用する
+    const db = client.db();
     const usersCollection = db.collection('users');
 
     const user = await usersCollection.findOne({ email: session.user.email });
@@ -72,23 +72,31 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name } = body;
+    const { name, image } = body as { name?: string; image?: string | null };
 
     if (!name || typeof name !== 'string') {
       return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
     }
 
     const client = await getMongoClient();
-    const db = client.db(dbName);
+    // NextAuth と同じDBを利用
+    const db = client.db();
     const usersCollection = db.collection('users');
+
+    const updateFields: Record<string, unknown> = {
+      name,
+      updatedAt: new Date(),
+    };
+
+    // 画像が送られてきた場合のみ更新（Data URL や URL を想定）
+    if (typeof image === 'string') {
+      updateFields.image = image;
+    }
 
     const result = await usersCollection.updateOne(
       { email: session.user.email },
       {
-        $set: {
-          name,
-          updatedAt: new Date(),
-        },
+        $set: updateFields,
       }
     );
 

@@ -46,46 +46,54 @@ export default function HeroSection() {
     <Box
       component="section"
       sx={{
-        minHeight: { xs: 'auto', md: 'auto' },
+        minHeight: '100vh',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'center',
         position: 'relative',
         overflow: 'hidden',
-        background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)',
-        pt: { xs: 10, md: 8 },
-        pb: { xs: 4, md: 6 },
+        pt: { xs: 9, md: 9 },
+        pb: { xs: 4, md: 4 },
       }}
     >
-      {/* 背景の装飾 */}
       <Box
+        component="video"
         sx={{
           position: 'absolute',
-          top: '-10%',
-          right: '-5%',
-          width: '50%',
-          height: '60%',
-          background: 'radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(60px)',
+          top: '50%',
+          left: '50%',
+          minWidth: '100%',
+          minHeight: '100%',
+          transform: 'translate(-50%, -50%)',
+          objectFit: 'cover',
           zIndex: 0,
         }}
+        src="/videos/hero-background.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
       />
       <Box
         sx={{
           position: 'absolute',
-          bottom: '10%',
-          left: '-10%',
-          width: '40%',
-          height: '50%',
-          background: 'radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(50px)',
-          zIndex: 0,
+          inset: 0,
+          background:
+            'linear-gradient(120deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 40%, rgba(15, 23, 42, 0.3) 100%)',
+          zIndex: 1,
         }}
       />
 
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container
+        maxWidth="lg"
+        sx={{
+          position: 'relative',
+          zIndex: 2,
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+        }}
+      >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -93,12 +101,14 @@ export default function HeroSection() {
         >
           <Box
             sx={{
+              maxWidth: { xs: '100%', md: 680 },
+              textAlign: 'center',
+              mx: 'auto',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              py: { xs: 2, md: 3 },
+              py: { xs: 4, md: 6 },
+              mt: { xs: 2, md: 3 },
             }}
           >
             {/* メインタイトル */}
@@ -116,8 +126,8 @@ export default function HeroSection() {
                 component="h1"
                 sx={{
                   mb: { xs: 2.5, md: 3 },
-                  color: 'text.primary',
-                  fontSize: { xs: '2rem', md: '3.5rem' },
+                  color: '#f9fafb',
+                  fontSize: { xs: '2.8rem', md: '4.2rem' },
                   fontWeight: 800,
                   lineHeight: 1.15,
                   letterSpacing: '-0.03em',
@@ -126,8 +136,8 @@ export default function HeroSection() {
                   },
                 }}
               >
-                5問でわかる、<br />
-                あなたの<span>キャリア</span>
+                BEST PARTNER<br />
+                FOR YOUR <span>CAREER</span>
               </Typography>
             </motion.div>
 
@@ -144,58 +154,22 @@ export default function HeroSection() {
             >
               <Typography
                 sx={{
-                  color: 'text.secondary',
-                  fontSize: { xs: '1rem', md: '1.25rem' },
+                  color: 'rgba(241, 245, 249, 0.9)',
+                  fontSize: { xs: '1.05rem', md: '1.2rem' },
                   fontWeight: 400,
-                  lineHeight: 1.8,
-                  mb: { xs: 4, md: 5 },
-                  maxWidth: 600,
+                  lineHeight: 1.9,
+                  mt: { xs: 2, md: 2.5 },
+                  mb: { xs: 4.5, md: 5 },
+                  maxWidth: 540,
                   '& span': {
                     color: '#f97316',
                     fontWeight: 600,
                   },
                 }}
               >
-                <span>AI</span>があなたに最適な<br />
-                <span>キャリアロードマップ</span>を提案します
+                たった<span>5問</span>の質問で、あなたの<span>強み</span>と<span>可能性</span>を可視化。<br />
+                <span>AI</span>があなただけの<span>キャリアロードマップ</span>を描きます。
               </Typography>
-            </motion.div>
-
-            {/* ヒーロー画像 */}
-            <motion.div
-              key={`image-${animationKey}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-              transition={{ 
-                duration: 0.8,
-                delay: 0.5,
-                ease: [0.16, 1, 0.3, 1]
-              }}
-            >
-              <Box
-                sx={{
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: { xs: '100%', md: 650 },
-                  mb: { xs: 4, md: 5 },
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  boxShadow: '0 20px 60px rgba(139, 90, 43, 0.15)',
-                }}
-              >
-                <Image
-                  src="/hero-image.png"
-                  alt="キャリアアップを目指すビジネスパーソン"
-                  width={1200}
-                  height={675}
-                  style={{ 
-                    width: '100%', 
-                    height: 'auto',
-                    display: 'block',
-                  }}
-                  priority
-                />
-              </Box>
             </motion.div>
 
             {/* CTAボタン */}
@@ -205,11 +179,15 @@ export default function HeroSection() {
               animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ 
                 duration: 0.6,
-                delay: 0.7,
+                delay: 0.5,
                 ease: [0.16, 1, 0.3, 1]
               }}
             >
-              <Box>
+              <Box
+                sx={{
+                  mt: { xs: 6, md: 10 },
+                }}
+              >
                 <CTAButton variant="primary" size="large" />
               </Box>
             </motion.div>

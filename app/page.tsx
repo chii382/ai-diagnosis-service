@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import FeaturesSection from './components/FeaturesSection';
+import PainSection from './components/PainSection';
 import StepsSection from './components/StepsSection';
 import PricingSection from './components/PricingSection';
 import FAQSection from './components/FAQSection';
@@ -21,6 +22,7 @@ export default function Home() {
         transition={{ duration: 0.6 }}
       >
         <HeroSection />
+        <PainSection />
         <FeaturesSection />
         <StepsSection />
         <PricingSection />

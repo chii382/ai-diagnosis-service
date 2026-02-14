@@ -43,8 +43,8 @@ const features = [
   },
   {
     icon: <VerifiedIcon sx={{ fontSize: 48 }} />,
-    title: '専門家監修の信頼性',
-    description: 'キャリアカウンセラーや人事の専門家が監修。信頼できる診断結果をお届けします。',
+    title: '専門家「あきらパパ」監修',
+    description: 'キャリア支援の専門家「あきらパパ」が監修。現場目線の、信頼できる診断結果をお届けします。',
     color: '#ea580c',
   },
 ];
@@ -160,7 +160,7 @@ export default function FeaturesSection() {
                     component="h3"
                     sx={{
                       mb: 1.5,
-                      color: 'text.primary',
+                      color: '#3d2c1e',
                       fontSize: { xs: '1.125rem', md: '1.25rem' },
                       fontWeight: 600,
                     }}
@@ -170,7 +170,7 @@ export default function FeaturesSection() {
                   <Typography
                     variant="body1"
                     sx={{
-                      color: 'text.secondary',
+                      color: '#3d2c1e',
                       lineHeight: 1.7,
                       fontSize: { xs: '0.875rem', md: '0.95rem' },
                     }}
