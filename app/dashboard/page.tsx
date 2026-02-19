@@ -151,7 +151,7 @@ export default function DashboardPage() {
             </Typography>
 
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Link href="/profile" style={{ textDecoration: 'none' }}>
+              <Link href="/diagnosis" style={{ textDecoration: 'none' }}>
                 <Button
                   variant="contained"
                   sx={{
@@ -161,6 +161,40 @@ export default function DashboardPage() {
                     textTransform: 'none',
                     '&:hover': {
                       background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
+                    },
+                  }}
+                >
+                  AIキャリア診断
+                </Button>
+              </Link>
+              <Link href="/diagnosis/history" style={{ textDecoration: 'none' }}>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: '#f97316',
+                    color: '#f97316',
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderColor: '#ea580c',
+                      backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                    },
+                  }}
+                >
+                  診断履歴
+                </Button>
+              </Link>
+              <Link href="/profile" style={{ textDecoration: 'none' }}>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: '#f97316',
+                    color: '#f97316',
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderColor: '#ea580c',
+                      backgroundColor: 'rgba(249, 115, 22, 0.08)',
                     },
                   }}
                 >

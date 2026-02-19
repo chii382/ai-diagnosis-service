@@ -18,11 +18,12 @@
 
 | 環境変数名 | 値 | 説明 |
 |-----------|-----|------|
-| `GOOGLE_CLIENT_ID` | `1034055950152-s2fonhh8tj5dg7gab6m031bjtafipsve.apps.googleusercontent.com` | Google OAuth認証ID |
-| `GOOGLE_CLIENT_SECRET` | `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` | Google OAuth認証シークレット |
-| `AUTH_SECRET` | `jozdqXva8ijeFv4kFPdXRgw+glTbotmiV4FFYrqfw88=` | NextAuth.jsセッション暗号化キー |
-| `MONGODB_URI` | `mongodb+srv://akirapapa_db_user:akirapapa@cluster0.yx71oyz.mongodb.net/?appName=Cluster0` | MongoDB接続文字列 |
+| `GOOGLE_CLIENT_ID` | （Google Cloud Consoleで取得） | Google OAuth認証ID |
+| `GOOGLE_CLIENT_SECRET` | （Google Cloud Consoleで取得） | Google OAuth認証シークレット |
+| `AUTH_SECRET` | （`openssl rand -base64 32` で生成） | NextAuth.jsセッション暗号化キー |
+| `MONGODB_URI` | （MongoDB Atlasの接続文字列） | MongoDB接続文字列 |
 | `MONGODB_DB_NAME` | `auth` | MongoDBデータベース名（オプション） |
+| `ANTHROPIC_API_KEY` | （Anthropic APIキー） | AIキャリア診断機能用（Claude Haiku 4.5） |
 | `NEXTAUTH_URL` | `https://ai-diagnosis-service-virid.vercel.app` | 本番環境のURL（**重要**） |
 | `AUTH_URL` | `https://ai-diagnosis-service-virid.vercel.app` | 認証URL（**重要**） |
 

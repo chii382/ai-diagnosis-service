@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 保護されたルート
-  const protectedRoutes = ['/dashboard', '/profile'];
+  const protectedRoutes = ['/dashboard', '/profile', '/diagnosis'];
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
   // 認証が必要なルートにアクセスしているが、未ログインの場合
@@ -21,5 +21,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/profile/:path*'],
+  matcher: ['/dashboard/:path*', '/profile/:path*', '/diagnosis/:path*'],
 };

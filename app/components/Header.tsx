@@ -180,6 +180,22 @@ export default function Header() {
               </Link>
             </ListItem>
             <ListItem disablePadding>
+              <Link href="/diagnosis" style={{ textDecoration: 'none', width: '100%' }}>
+                <ListItemButton
+                  sx={{
+                    color: 'rgba(139, 90, 43, 0.8)',
+                    fontWeight: 500,
+                    '&:hover': {
+                      backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                      color: '#f97316',
+                    },
+                  }}
+                >
+                  <ListItemText primary="AIキャリア診断" />
+                </ListItemButton>
+              </Link>
+            </ListItem>
+            <ListItem disablePadding>
               <ListItemButton
                 onClick={() => {
                   handleLogoutClick();
@@ -343,6 +359,24 @@ export default function Header() {
                       }}
                     >
                       ダッシュボード
+                    </Button>
+                  </Link>
+                  <Link href="/diagnosis" style={{ textDecoration: 'none' }}>
+                    <Button
+                      sx={{
+                        color: 'rgba(139, 90, 43, 0.8)',
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                        textTransform: 'none',
+                        px: 2.5,
+                        whiteSpace: 'nowrap',
+                        '&:hover': {
+                          color: '#f97316',
+                          backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                        },
+                      }}
+                    >
+                      AIキャリア診断
                     </Button>
                   </Link>
                   <Button
