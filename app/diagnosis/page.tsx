@@ -26,6 +26,7 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const QUESTIONS = [
   {
@@ -93,12 +94,14 @@ QUESTIONS.forEach((q) => {
 export default function DiagnosisFormPage() {
   const router = useRouter();
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers);
+  const [expandedAccordion, setExpandedAccordion] = useState<string | false>(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (key: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
     setError(null);
+    setExpandedAccordion(false);
   };
 
   const isValid = QUESTIONS.every((q) => (answers[q.key] ?? '').trim().length > 0);
@@ -153,27 +156,40 @@ export default function DiagnosisFormPage() {
       sx={{
         minHeight: '100vh',
         background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)',
-        pt: 12,
+        pt: 8,
         pb: 6,
       }}
     >
-      <Container maxWidth="md">
-        <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{ fontWeight: 700, color: '#3d2c1e', mb: 1 }}
-          >
-            AIキャリア診断
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#5c4033' }}>
-            5問に答えるだけで、AIがあなたのキャリアロードマップを提案します
-          </Typography>
+      <Container maxWidth="md" sx={{ px: { xs: 2, sm: 3 } }}>
+        {/* ヘッダーバナー */}
+        <Box
+          sx={{
+            position: 'relative',
+            width: '100%',
+            aspectRatio: '985 / 152',
+            overflow: 'hidden',
+            borderRadius: 2,
+            bgcolor: '#fff7ed',
+            mb: 2,
+          }}
+        >
+          <Image
+            src="/images/diagnosis-header-banner.png"
+            alt="AIキャリア診断"
+            fill
+            sizes="(max-width: 900px) 100vw, 900px"
+            style={{ objectFit: 'contain', objectPosition: 'center center' }}
+            priority
+            unoptimized
+          />
         </Box>
+        <Typography variant="body1" sx={{ color: '#5c4033', mb: 2 }}>
+          5問に答えるだけで、AIがあなたのキャリアロードマップを提案します
+        </Typography>
 
         <Card
           sx={{
-            p: 4,
+            p: 3,
             boxShadow: '0 20px 60px rgba(139, 90, 43, 0.12)',
             borderRadius: 3,
             border: '1px solid rgba(139, 90, 43, 0.08)',
@@ -181,13 +197,15 @@ export default function DiagnosisFormPage() {
         >
           <CardContent>
             <form onSubmit={handleSubmit}>
-              <Box sx={{ mb: 4 }}>
+              <Box sx={{ mb: 3 }}>
                 {QUESTIONS.map((q) => {
                   const selected = answers[q.key] ?? '';
                   const isAnswered = selected.length > 0;
                   return (
                     <Accordion
                       key={q.key}
+                      expanded={expandedAccordion === q.key ? true : false}
+                      onChange={(_, isExpanded) => setExpandedAccordion(isExpanded ? q.key : false)}
                       sx={{
                         mb: 2,
                         borderRadius: 2,
@@ -206,7 +224,7 @@ export default function DiagnosisFormPage() {
                         }
                         sx={{
                           px: { xs: 2, md: 3 },
-                          py: 2,
+                          py: 1.5,
                           '&:hover': {
                             backgroundColor: 'rgba(249, 115, 22, 0.04)',
                           },
@@ -250,7 +268,7 @@ export default function DiagnosisFormPage() {
                           )}
                         </Box>
                       </AccordionSummary>
-                      <AccordionDetails sx={{ px: { xs: 2, md: 3 }, pb: 3, pt: 0 }}>
+                      <AccordionDetails sx={{ px: { xs: 2, md: 3 }, pb: 2, pt: 0 }}>
                         <RadioGroup
                           value={selected}
                           onChange={(e) => handleChange(q.key, e.target.value)}
@@ -294,7 +312,7 @@ export default function DiagnosisFormPage() {
                 })}
               </Box>
 
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 3 }}>
                 {!isValid && (
                   <Typography variant="body2" sx={{ color: '#dc2626' }}>
                     ※ すべての質問（5問）に回答すると診断を実行できます
@@ -304,14 +322,16 @@ export default function DiagnosisFormPage() {
                   <Button
                     type="submit"
                     variant="contained"
-                    size="large"
                     disabled={!isValid || loading}
-                    startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <PsychologyIcon />}
+                    startIcon={loading ? <CircularProgress size={24} color="inherit" /> : <PsychologyIcon sx={{ fontSize: 22 }} />}
                     sx={{
+                      width: 220,
+                      minHeight: 52,
+                      fontSize: '1.1rem',
+                      whiteSpace: 'nowrap',
                       background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
                       fontWeight: 600,
                       textTransform: 'none',
-                      px: 4,
                       '&:hover': {
                         background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
                       },
@@ -327,6 +347,10 @@ export default function DiagnosisFormPage() {
                   <Button
                     variant="outlined"
                     sx={{
+                      width: 220,
+                      minHeight: 52,
+                      fontSize: '1.1rem',
+                      whiteSpace: 'nowrap',
                       borderColor: '#f97316',
                       color: '#f97316',
                       fontWeight: 600,
@@ -341,7 +365,23 @@ export default function DiagnosisFormPage() {
                   </Button>
                 </Link>
                 <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-                  <Button variant="text" sx={{ color: '#5c4033', textTransform: 'none' }}>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      width: 220,
+                      minHeight: 52,
+                      fontSize: '1.1rem',
+                      whiteSpace: 'nowrap',
+                      borderColor: 'rgba(139, 90, 43, 0.3)',
+                      color: '#5c4033',
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      '&:hover': {
+                        borderColor: '#5c4033',
+                        backgroundColor: 'rgba(139, 90, 43, 0.06)',
+                      },
+                    }}
+                  >
                     ダッシュボードに戻る
                   </Button>
                 </Link>

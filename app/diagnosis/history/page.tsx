@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Box,
   Container,
@@ -73,15 +74,56 @@ export default function DiagnosisHistoryPage() {
       sx={{
         minHeight: '100vh',
         background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)',
-        pt: 12,
+        pt: 4,
         pb: 6,
       }}
     >
       <Container maxWidth="md">
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: '#3d2c1e', mb: 1 }}>
-            診断履歴
-          </Typography>
+        {/* ヘッダーバナー（画像全体を表示） */}
+        <Box
+          sx={{
+            width: '100%',
+            mb: 1.5,
+            borderRadius: 2,
+            overflow: 'hidden',
+          }}
+        >
+          <Image
+            src="/images/diagnosis-history-header-banner.png"
+            alt="診断履歴"
+            width={1024}
+            height={400}
+            style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
+            priority
+            unoptimized
+          />
+        </Box>
+
+        <Box sx={{ mb: 1.5 }}>
+          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+            <Button
+              variant="outlined"
+              sx={{
+                color: '#3d2c1e',
+                background: '#fff',
+                borderColor: 'rgba(139, 90, 43, 0.35)',
+                borderRadius: '9999px',
+                px: 3,
+                py: 1.2,
+                textTransform: 'none',
+                fontWeight: 500,
+                '&:hover': {
+                  background: 'rgba(139, 90, 43, 0.04)',
+                  borderColor: 'rgba(139, 90, 43, 0.5)',
+                },
+              }}
+            >
+              ← ダッシュボードに戻る
+            </Button>
+          </Link>
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
           <Typography variant="body1" sx={{ color: '#5c4033' }}>
             過去のAIキャリア診断結果を確認できます
           </Typography>
@@ -168,14 +210,6 @@ export default function DiagnosisHistoryPage() {
             )}
           </CardContent>
         </Card>
-
-        <Box sx={{ mt: 3 }}>
-          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-            <Button variant="text" sx={{ color: '#5c4033', textTransform: 'none' }}>
-              ← ダッシュボードに戻る
-            </Button>
-          </Link>
-        </Box>
       </Container>
 
       {/* エラーダイアログ */}

@@ -1,14 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { motion } from 'motion/react';
-import Image from 'next/image';
+import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
+import LogoutIcon from '@mui/icons-material/Logout';
 import CTAButton from './common/CTAButton';
 
 export default function HeroSection() {
+  const { data: session, status } = useSession();
   const [animationKey, setAnimationKey] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const isLoggedIn = status === 'authenticated' && !!session;
+
+  const handleLogoutClick = () => setLogoutDialogOpen(true);
+  const handleLogoutConfirm = () => {
+    signOut({ callbackUrl: '/' });
+    setLogoutDialogOpen(false);
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -92,12 +103,14 @@ export default function HeroSection() {
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'center',
+          flex: 1,
         }}
       >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
+          style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}
         >
           <Box
             sx={{
@@ -172,7 +185,7 @@ export default function HeroSection() {
               </Typography>
             </motion.div>
 
-            {/* CTAボタン */}
+            {/* CTAボタン or ログアウト（ログイン中） */}
             <motion.div
               key={`button-${animationKey}`}
               initial={{ opacity: 0, y: 20 }}
@@ -182,18 +195,171 @@ export default function HeroSection() {
                 delay: 0.5,
                 ease: [0.16, 1, 0.3, 1]
               }}
+              style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
             >
+              {isLoggedIn ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 2,
+                  p: 3,
+                  borderRadius: 3,
+                  background: 'rgba(255, 251, 245, 0.95)',
+                  backdropFilter: 'blur(12px)',
+                  border: '2px solid rgba(249, 115, 22, 0.4)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+                  minWidth: { xs: 280, sm: 360 },
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: '#3d2c1e',
+                    fontSize: { xs: '0.95rem', sm: '1.05rem' },
+                    fontWeight: 600,
+                    textAlign: 'center',
+                  }}
+                >
+                  ログイン中です。ログアウトする場合はこちらから
+                </Typography>
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<LogoutIcon />}
+                  onClick={handleLogoutClick}
+                  sx={{
+                    background: 'linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ed8936 100%)',
+                    color: '#fff',
+                    px: 4,
+                    py: 1.8,
+                    fontWeight: 700,
+                    letterSpacing: '0.05em',
+                    borderRadius: '9999px',
+                    textTransform: 'none',
+                    boxShadow: '0 8px 24px rgba(251, 146, 60, 0.45)',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 12px 32px rgba(251, 146, 60, 0.55)',
+                    },
+                  }}
+                >
+                  ログアウト
+                </Button>
+              </Box>
+              ) : (
               <Box
                 sx={{
                   mt: { xs: 6, md: 10 },
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  alignItems: 'stretch',
+                  justifyContent: 'center',
+                  gap: 3.5,
+                  width: '100%',
+                  maxWidth: 760,
                 }}
               >
-                <CTAButton variant="primary" size="large" />
+                <Link href="/auth/signin" style={{ textDecoration: 'none', flex: 1, minWidth: 300 }}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      sx={{
+                        background: 'linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ed8936 100%)',
+                        color: '#ffffff',
+                        px: 6,
+                        py: 2.5,
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                        boxShadow: '0 8px 30px rgba(251, 146, 60, 0.45)',
+                        borderRadius: 50,
+                        textTransform: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 0.25,
+                        '&:hover': {
+                          background: 'linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%)',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 12px 40px rgba(251, 146, 60, 0.55)',
+                        },
+                      }}
+                    >
+                      <Box
+                        component="span"
+                        sx={{
+                          fontSize: '1rem',
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          color: '#3d2817',
+                          textShadow: '0 1px 2px rgba(255,255,255,0.3)',
+                        }}
+                      >
+                        会員様はこちら
+                      </Box>
+                      <Box
+                        component="span"
+                        sx={{
+                          fontSize: '1.65rem',
+                          fontWeight: 800,
+                          lineHeight: 1.2,
+                          color: '#fff',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3)',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        ログイン
+                      </Box>
+                    </Button>
+                  </Link>
+                <Box sx={{ flex: 1, minWidth: 300, position: 'relative', overflow: 'visible' }}>
+                  <CTAButton variant="primary" size="large" fullWidth />
+                </Box>
               </Box>
+              )}
             </motion.div>
           </Box>
         </motion.div>
       </Container>
+
+      {/* ログアウト確認ダイアログ */}
+      <Dialog
+        open={logoutDialogOpen}
+        onClose={() => setLogoutDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            background: '#fff',
+            border: '1px solid rgba(139, 90, 43, 0.12)',
+            borderRadius: 3,
+            boxShadow: '0 25px 60px rgba(139, 90, 43, 0.15)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: '#3d2c1e', fontWeight: 700, fontSize: '1.2rem' }}>ログアウトの確認</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: '#5c4033', fontSize: '1.05rem' }}>ログアウトします。よろしいですか？</Typography>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button onClick={() => setLogoutDialogOpen(false)} sx={{ color: '#5c4033', textTransform: 'none' }}>
+            キャンセル
+          </Button>
+          <Button
+            onClick={handleLogoutConfirm}
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+              textTransform: 'none',
+              '&:hover': { background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)' },
+            }}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

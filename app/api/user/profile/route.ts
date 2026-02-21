@@ -56,6 +56,11 @@ export async function GET(request: NextRequest) {
       email: user.email,
       image: user.image,
       emailVerified: user.emailVerified,
+      gender: user.gender ?? '',
+      ageGroup: user.ageGroup ?? '',
+      jobType: user.jobType ?? '',
+      industry: user.industry ?? '',
+      other: user.other ?? '',
     });
   } catch (error) {
     console.error('Error fetching user profile:', error);
@@ -72,7 +77,23 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, image } = body as { name?: string; image?: string | null };
+    const {
+      name,
+      image,
+      gender,
+      ageGroup,
+      jobType,
+      industry,
+      other,
+    } = body as {
+      name?: string;
+      image?: string | null;
+      gender?: string;
+      ageGroup?: string;
+      jobType?: string;
+      industry?: string;
+      other?: string;
+    };
 
     if (!name || typeof name !== 'string') {
       return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
@@ -92,6 +113,12 @@ export async function PUT(request: NextRequest) {
     if (typeof image === 'string') {
       updateFields.image = image;
     }
+    // 性別・年齢・職種・業種・その他は、空文字が送られても上書きして前回データを消す
+    if (gender !== undefined && gender !== null) updateFields.gender = String(gender);
+    if (ageGroup !== undefined && ageGroup !== null) updateFields.ageGroup = String(ageGroup);
+    if (jobType !== undefined && jobType !== null) updateFields.jobType = String(jobType);
+    if (industry !== undefined && industry !== null) updateFields.industry = String(industry);
+    if (other !== undefined && other !== null) updateFields.other = String(other);
 
     const result = await usersCollection.updateOne(
       { email: session.user.email },
@@ -111,6 +138,11 @@ export async function PUT(request: NextRequest) {
       email: updatedUser?.email,
       image: updatedUser?.image,
       emailVerified: updatedUser?.emailVerified,
+      gender: updatedUser?.gender ?? '',
+      ageGroup: updatedUser?.ageGroup ?? '',
+      jobType: updatedUser?.jobType ?? '',
+      industry: updatedUser?.industry ?? '',
+      other: updatedUser?.other ?? '',
     });
   } catch (error) {
     console.error('Error updating user profile:', error);

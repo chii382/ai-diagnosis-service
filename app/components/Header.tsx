@@ -7,7 +7,6 @@ import Image from 'next/image';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
-import LoginIcon from '@mui/icons-material/Login';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -195,45 +194,29 @@ export default function Header() {
                 </ListItemButton>
               </Link>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  handleLogoutClick();
-                  setMobileOpen(false);
-                }}
-                sx={{
-                  color: '#dc2626',
-                  fontWeight: 500,
-                  '&:hover': {
-                    backgroundColor: 'rgba(220, 38, 38, 0.08)',
-                    color: '#b91c1c',
-                  },
-                }}
-              >
-                <LogoutIcon sx={{ mr: 1 }} />
-                <ListItemText primary="ログアウト" />
-              </ListItemButton>
-            </ListItem>
+            {pathname !== '/' && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    handleLogoutClick();
+                    setMobileOpen(false);
+                  }}
+                  sx={{
+                    color: '#f97316',
+                    fontWeight: 500,
+                    '&:hover': {
+                      backgroundColor: 'rgba(249, 115, 22, 0.12)',
+                      color: '#ea580c',
+                    },
+                  }}
+                >
+                  <LogoutIcon sx={{ mr: 1 }} />
+                  <ListItemText primary="ログアウト" />
+                </ListItemButton>
+              </ListItem>
+            )}
           </>
-        ) : (
-          <ListItem disablePadding>
-            <Link href="/auth/signin" style={{ textDecoration: 'none', width: '100%' }}>
-              <ListItemButton
-                sx={{
-                  color: '#f97316',
-                  fontWeight: 600,
-                  '&:hover': {
-                    backgroundColor: 'rgba(249, 115, 22, 0.08)',
-                    color: '#ea580c',
-                  },
-                }}
-              >
-                <LoginIcon sx={{ mr: 1 }} />
-                <ListItemText primary="ログイン" />
-              </ListItemButton>
-            </Link>
-          </ListItem>
-        )}
+        ) : null}
       </List>
     </Box>
   );
@@ -379,47 +362,30 @@ export default function Header() {
                       AIキャリア診断
                     </Button>
                   </Link>
-                  <Button
-                    startIcon={<LogoutIcon />}
-                    onClick={handleLogoutClick}
-                    sx={{
-                      color: '#dc2626',
-                      fontWeight: 500,
-                      fontSize: '0.95rem',
-                      textTransform: 'none',
-                      px: 2.5,
-                      whiteSpace: 'nowrap',
-                      '&:hover': {
-                        color: '#b91c1c',
-                        backgroundColor: 'rgba(220, 38, 38, 0.08)',
-                      },
-                    }}
-                  >
-                    ログアウト
-                  </Button>
+                  {pathname !== '/' && (
+                    <Button
+                      variant="contained"
+                      startIcon={<LogoutIcon />}
+                      onClick={handleLogoutClick}
+                      sx={{
+                        color: '#fff',
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                        textTransform: 'none',
+                        px: 2.5,
+                        whiteSpace: 'nowrap',
+                        borderRadius: '9999px',
+                        background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+                        '&:hover': {
+                          background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
+                        },
+                      }}
+                    >
+                      ログアウト
+                    </Button>
+                  )}
                 </>
-              ) : (
-                <Link href="/auth/signin" style={{ textDecoration: 'none' }}>
-                  <Button
-                    variant="contained"
-                    startIcon={<LoginIcon />}
-                    sx={{
-                      background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
-                      color: 'white',
-                      fontWeight: 600,
-                      fontSize: '0.95rem',
-                      textTransform: 'none',
-                      px: 3.5,
-                      whiteSpace: 'nowrap',
-                      '&:hover': {
-                        background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
-                      },
-                    }}
-                  >
-                    ログイン
-                  </Button>
-                </Link>
-              )}
+              ) : null}
               </Box>
               {/* モバイルメニューボタン（右寄せ） */}
               <IconButton
@@ -464,7 +430,14 @@ export default function Header() {
           <Button onClick={handleLogoutCancel} color="inherit">
             キャンセル
           </Button>
-          <Button onClick={handleLogoutConfirm} color="error" variant="contained">
+          <Button
+            onClick={handleLogoutConfirm}
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+              '&:hover': { background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)' },
+            }}
+          >
             OK
           </Button>
         </DialogActions>
