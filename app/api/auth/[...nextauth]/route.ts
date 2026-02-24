@@ -31,11 +31,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user && token.sub) {
         session.user.id = token.sub;
       }
+      if (session.user) {
+        session.user.role = (token.role as 'admin' | 'user') ?? 'user';
+      }
       return session;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+      }
+      const email = (user?.email ?? token.email) as string | undefined;
+      if (email && (user || !token.role)) {
+        const { getUserRoleByEmail } = await import('@/lib/getUserRole');
+        token.role = await getUserRoleByEmail(email);
       }
       return token;
     },

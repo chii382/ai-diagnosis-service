@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { AppBar, Toolbar, Typography, Button, Container, Box, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import Image from 'next/image';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const navItems = [
   { label: 'こんなお悩みに', path: '/#pain' },
@@ -21,11 +21,41 @@ const navItems = [
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const { data: session } = useSession();
+  const [adminErrorDialogOpen, setAdminErrorDialogOpen] = useState(false);
+  const { data: session, status } = useSession();
+
+  // ログイン後に/adminへリダイレクトされ、管理者でなかった場合のエラーダイアログ表示
+  useEffect(() => {
+    if (searchParams.get('adminDenied') === '1') {
+      setAdminErrorDialogOpen(true);
+      router.replace('/', { scroll: false });
+    }
+  }, [searchParams, router]);
 
   const handleLogoutClick = () => setLogoutDialogOpen(true);
+  const handleAdminLoginClick = () => {
+    if (status === 'loading') return;
+    if (!session) {
+      signIn(undefined, { callbackUrl: '/admin' });
+      setMobileOpen(false);
+      return;
+    }
+    const role = (session.user as { role?: string })?.role;
+    if (role === 'admin') {
+      router.push('/admin');
+    } else {
+      setAdminErrorDialogOpen(true);
+    }
+    setMobileOpen(false);
+  };
+  const handleAdminErrorDialogClose = () => {
+    setAdminErrorDialogOpen(false);
+    if (pathname !== '/') router.push('/');
+  };
   const handleLogoutConfirm = () => {
     signOut({ callbackUrl: '/' });
     setLogoutDialogOpen(false);
@@ -160,6 +190,22 @@ export default function Header() {
             </Link>
           </ListItem>
         ))}
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleAdminLoginClick}
+            sx={{
+              color: '#fef3e2',
+              fontWeight: 500,
+              borderRadius: '9999px',
+              backgroundColor: '#3d2c1e',
+              '&:hover': {
+                backgroundColor: '#2d1f14',
+              },
+            }}
+          >
+            <ListItemText primary="管理者ログイン" />
+          </ListItemButton>
+        </ListItem>
         {session ? (
           <>
             <ListItem disablePadding>
@@ -386,6 +432,25 @@ export default function Header() {
                   )}
                 </>
               ) : null}
+              <Button
+                onClick={handleAdminLoginClick}
+                variant="contained"
+                sx={{
+                  color: '#fef3e2',
+                  fontWeight: 500,
+                  fontSize: '0.95rem',
+                  textTransform: 'none',
+                  px: 2.5,
+                  whiteSpace: 'nowrap',
+                  borderRadius: '9999px',
+                  backgroundColor: '#3d2c1e',
+                  '&:hover': {
+                    backgroundColor: '#2d1f14',
+                  },
+                }}
+              >
+                管理者ログイン
+              </Button>
               </Box>
               {/* モバイルメニューボタン（右寄せ） */}
               <IconButton
@@ -419,6 +484,26 @@ export default function Header() {
       >
         {drawer}
       </Drawer>
+
+      {/* 管理者アクセスエラーダイアログ */}
+      <Dialog open={adminErrorDialogOpen} onClose={handleAdminErrorDialogClose}>
+        <DialogTitle>アクセス不可</DialogTitle>
+        <DialogContent>
+          <Typography>管理者以外はアクセスできません</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleAdminErrorDialogClose}
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+              '&:hover': { background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)' },
+            }}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* ログアウト確認ダイアログ */}
       <Dialog open={logoutDialogOpen} onClose={handleLogoutCancel}>

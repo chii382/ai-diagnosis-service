@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { getUserIdFromSession } from '@/lib/getUserId';
+import { requireAdmin } from '@/lib/requireAdmin';
 import { connectDB } from '@/lib/db';
 import Diagnosis from '@/models/Diagnosis';
 import { Types } from 'mongoose';
@@ -45,31 +46,38 @@ export async function GET(
     }
 
     await connectDB();
-    const diagnosis = await Diagnosis.findOne({ _id: docId, userId }).lean();
+    let diagnosis = await Diagnosis.findOne({ _id: docId, userId }).lean();
 
     if (!diagnosis) {
-      const withoutUserId = await Diagnosis.findOne({ _id: docId }).lean();
-      log('5. not found', {
-        docExists: !!withoutUserId,
-        docUserId: withoutUserId?.userId?.toString(),
-        queryUserId: userId.toString(),
-      });
-      return NextResponse.json(
-        {
-          error: 'Not found',
-          debug:
-            process.env.NODE_ENV === 'development'
-              ? {
-                  docExists: !!withoutUserId,
-                  userIdMismatch: !!withoutUserId && withoutUserId.userId?.toString() !== userId.toString(),
-                }
-              : undefined,
-        },
-        { status: 404 }
-      );
+      const admin = await requireAdmin();
+      if (admin.ok) {
+        diagnosis = await Diagnosis.findOne({ _id: docId }).lean();
+      }
+      if (!diagnosis) {
+        const withoutUserId = await Diagnosis.findOne({ _id: docId }).lean();
+        log('5. not found', {
+          docExists: !!withoutUserId,
+          docUserId: withoutUserId?.userId?.toString(),
+          queryUserId: userId.toString(),
+        });
+        return NextResponse.json(
+          {
+            error: 'Not found',
+            debug:
+              process.env.NODE_ENV === 'development'
+                ? {
+                    docExists: !!withoutUserId,
+                    userIdMismatch: !!withoutUserId && withoutUserId.userId?.toString() !== userId.toString(),
+                  }
+                : undefined,
+          },
+          { status: 404 }
+        );
+      }
+      log('5. found (admin override)');
+    } else {
+      log('5. found, returning');
     }
-
-    log('5. found, returning');
     return NextResponse.json({
       id: diagnosis._id.toString(),
       answers: diagnosis.answers,

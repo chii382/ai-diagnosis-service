@@ -72,7 +72,7 @@ function SignInForm() {
                 </Typography>
               </Link>
               <Typography variant="body1" sx={{ color: '#5c4033', mb: 4 }}>
-                会員専用機能をご利用いただくには、Googleアカウントでログインしてください
+                Googleアカウントでログインしてください
               </Typography>
             </Box>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -99,7 +99,9 @@ interface DiagnosisDetail {
 export default function DiagnosisDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const id = params.id as string;
+  const fromAdmin = searchParams.get('from') === 'admin';
   const [data, setData] = useState<DiagnosisDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -143,7 +145,7 @@ export default function DiagnosisDetailPage() {
     try {
       const res = await fetch(`/api/diagnosis/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete failed');
-      router.push('/diagnosis/history');
+      router.push(fromAdmin ? '/admin' : '/diagnosis/history');
     } catch {
       setErrorDialog('削除に失敗しました');
     } finally {
@@ -192,7 +194,7 @@ export default function DiagnosisDetailPage() {
         }}
       >
         <Container maxWidth="md">
-          <Link href="/diagnosis/history" style={{ textDecoration: 'none' }}>
+          <Link href={fromAdmin ? '/admin' : '/diagnosis/history'} style={{ textDecoration: 'none' }}>
             <Button
               variant="outlined"
               startIcon={<ArrowBackIcon />}
@@ -208,7 +210,7 @@ export default function DiagnosisDetailPage() {
                 '&:hover': { borderColor: '#5c4033', backgroundColor: 'rgba(139, 90, 43, 0.06)' },
               }}
             >
-              診断履歴に戻る
+              {fromAdmin ? '最近の診断結果へ戻る' : '診断履歴に戻る'}
             </Button>
           </Link>
         </Container>
@@ -322,7 +324,7 @@ export default function DiagnosisDetailPage() {
               unoptimized
             />
           </Box>
-          <Link href="/diagnosis/history" style={{ textDecoration: 'none' }}>
+          <Link href={fromAdmin ? '/admin' : '/diagnosis/history'} style={{ textDecoration: 'none' }}>
             <Button
               variant="outlined"
               startIcon={<ArrowBackIcon />}
@@ -339,7 +341,7 @@ export default function DiagnosisDetailPage() {
                 '&:hover': { borderColor: '#5c4033', backgroundColor: 'rgba(139, 90, 43, 0.06)' },
               }}
             >
-              診断履歴に戻る
+              {fromAdmin ? '最近の診断結果へ戻る' : '診断履歴に戻る'}
             </Button>
           </Link>
           <Typography variant="body2" sx={{ color: '#5c4033' }}>

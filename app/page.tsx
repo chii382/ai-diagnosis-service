@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { Box } from '@mui/material';
 import { motion } from 'motion/react';
 import Header from './components/Header';
@@ -15,7 +16,9 @@ import Footer from './components/Footer';
 export default function Home() {
   return (
     <Box component="main" sx={{ background: '#fff7ed', minHeight: '100vh' }}>
-      <Header />
+      <Suspense fallback={null}>
+        <Header />
+      </Suspense>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

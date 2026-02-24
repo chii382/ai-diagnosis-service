@@ -45,7 +45,23 @@ export async function GET(request: NextRequest) {
     const db = client.db();
     const usersCollection = db.collection('users');
 
-    const user = await usersCollection.findOne({ email: session.user.email });
+    let user = await usersCollection.findOne({ email: session.user.email });
+
+    // ユーザーが未作成の場合（診断未実施でプロフィールへ直接来た場合など）、作成する
+    if (!user) {
+      const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+      const defaultRole = adminEmails.includes(session.user.email.toLowerCase()) ? 'admin' : 'user';
+      await usersCollection.insertOne({
+        email: session.user.email,
+        name: session.user.name ?? '',
+        image: session.user.image ?? null,
+        emailVerified: null,
+        role: defaultRole,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      user = await usersCollection.findOne({ email: session.user.email });
+    }
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -127,8 +143,24 @@ export async function PUT(request: NextRequest) {
       }
     );
 
+    // ユーザーが未作成の場合（診断未実施でプロフィールへ直接来た場合など）、作成する
     if (result.matchedCount === 0) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+      const defaultRole = adminEmails.includes(session.user.email.toLowerCase()) ? 'admin' : 'user';
+      await usersCollection.insertOne({
+        email: session.user.email,
+        name,
+        image: typeof image === 'string' ? image : session.user.image ?? null,
+        emailVerified: null,
+        role: defaultRole,
+        gender: gender ?? '',
+        ageGroup: ageGroup ?? '',
+        jobType: jobType ?? '',
+        industry: industry ?? '',
+        other: other ?? '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
     }
 
     const updatedUser = await usersCollection.findOne({ email: session.user.email });
