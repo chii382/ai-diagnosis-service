@@ -92,8 +92,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', pt: 4, pb: 1, mt: -2, width: '100%', boxSizing: 'border-box', overflowX: 'hidden', background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)' }}>
-      <Container maxWidth="lg" sx={{ px: { xs: 1.5, sm: 2 }, margin: '0 auto', display: 'block', pt: 0, mt: 0 }}>
+    <Box sx={{ minHeight: '100vh', pt: { xs: 2, sm: 4 }, pb: 1, mt: { xs: -1, sm: -2 }, width: '100%', boxSizing: 'border-box', overflowX: 'hidden', background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 1, sm: 1.5, md: 2 }, margin: '0 auto', pt: 0, mt: 0, width: '100%', maxWidth: '100%' }}>
 
         {/* ヘッダーバナー（画像全体を表示、アスペクト比を維持） */}
         <Box
@@ -118,10 +118,10 @@ export default function DashboardPage() {
         <Box
           sx={{
             mt: 0.25,
-            minHeight: '55vh',
+            minHeight: { xs: '50vh', sm: '55vh' },
             background: 'linear-gradient(180deg, #fffbf5 0%, #fff7ed 50%, #fef3e2 100%)',
             pt: 1,
-            pb: 5,
+            pb: { xs: 3, sm: 5 },
             position: 'relative',
             overflow: 'hidden',
             borderRadius: 2,
@@ -146,26 +146,29 @@ export default function DashboardPage() {
             border: '1px solid rgba(139, 90, 43, 0.08)',
             overflow: 'hidden',
             boxShadow: '0 16px 48px rgba(139, 90, 43, 0.1)',
+            width: '100%',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {/* ユーザーセクション */}
           <Box
             sx={{
-              p: 3,
-              pt: 2.5,
+              p: { xs: 2, sm: 2.5, md: 3 },
+              pt: { xs: 1.5, sm: 2.5 },
               display: 'flex',
               flexDirection: 'column',
               background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.06) 0%, rgba(245, 158, 11, 0.02) 50%, transparent 100%)',
               borderBottom: '1px solid rgba(139, 90, 43, 0.06)',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
               {!profileLoaded ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box
                     sx={{
-                      width: 60,
-                      height: 60,
+                      width: { xs: 48, sm: 60 },
+                      height: { xs: 48, sm: 60 },
                       borderRadius: '50%',
                       bgcolor: 'rgba(249, 115, 22, 0.1)',
                       display: 'flex',
@@ -186,18 +189,18 @@ export default function DashboardPage() {
                     src={profileData.image || undefined}
                     alt={profileData.name || 'User'}
                     sx={{
-                      width: 60,
-                      height: 60,
+                      width: { xs: 48, sm: 60 },
+                      height: { xs: 48, sm: 60 },
                       bgcolor: '#f97316',
                       boxShadow: '0 6px 20px rgba(249, 115, 22, 0.3)',
                     }}
                   >
-                    {!profileData.image && <PersonIcon sx={{ fontSize: 30, color: '#fff' }} />}
+                    {!profileData.image && <PersonIcon sx={{ fontSize: { xs: 24, sm: 30 }, color: '#fff' }} />}
                   </Avatar>
                   <Box sx={{ minWidth: 0, flex: 1 }}>
                     <Typography
                       sx={{
-                        fontSize: '1.6rem',
+                        fontSize: { xs: '1.25rem', sm: '1.6rem' },
                         fontWeight: 700,
                         color: '#3d2c1e',
                         letterSpacing: '-0.02em',
@@ -208,7 +211,7 @@ export default function DashboardPage() {
                     </Typography>
                     <Typography
                       sx={{
-                        fontSize: '0.95rem',
+                        fontSize: { xs: '0.8rem', sm: '0.95rem' },
                         color: '#5c4033',
                         wordBreak: 'break-all',
                       }}
@@ -221,8 +224,8 @@ export default function DashboardPage() {
             </Box>
             <Typography
               sx={{
-                mt: 2,
-                fontSize: '1.05rem',
+                mt: { xs: 1.5, sm: 2 },
+                fontSize: { xs: '0.95rem', sm: '1.05rem' },
                 color: '#5c4033',
                 lineHeight: 1.6,
               }}
@@ -231,121 +234,110 @@ export default function DashboardPage() {
             </Typography>
           </Box>
 
-          {/* アクションカード */}
-          <Box
-            sx={{
-              p: 2.5,
-              pt: 1.5,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-              gridTemplateRows: 'auto auto',
-              gap: 1,
-            }}
-          >
-            {/* ワンポイントアドバイス：プロフィール入力ボタン上に表示 */}
+          {/* ワンポイントアドバイス */}
+          <Box sx={{ p: { xs: 1, sm: 2, md: 2.5 }, pt: 1.5, pb: 0 }}>
             <Box
               sx={{
-                gridRow: 1,
-                gridColumn: 3,
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'flex-end',
-                pb: 0.5,
-                pr: 0.5,
-                minWidth: 0,
+                position: 'relative',
+                width: '100%',
+                maxWidth: { sm: 400, md: 420 },
+                ml: { sm: 'auto' },
+                borderRadius: 2,
+                background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.18) 0%, rgba(245, 158, 11, 0.1) 100%)',
+                border: '2px solid rgba(249, 115, 22, 0.5)',
+                boxShadow: '0 2px 12px rgba(249, 115, 22, 0.15)',
                 overflow: 'visible',
+                '@keyframes adviceBounce': {
+                  '0%, 85%, 100%': { transform: 'translateY(0)' },
+                  '90%': { transform: 'translateY(-8px)' },
+                  '95%': { transform: 'translateY(2px)' },
+                },
+                animation: 'adviceBounce 3s ease-in-out infinite',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -10,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 0,
+                  height: 0,
+                  borderLeft: '12px solid transparent',
+                  borderRight: '12px solid transparent',
+                  borderTop: '14px solid rgba(249, 115, 22, 0.4)',
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -6,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 0,
+                  height: 0,
+                  borderLeft: '10px solid transparent',
+                  borderRight: '10px solid transparent',
+                  borderTop: '12px solid #fff9f5',
+                },
               }}
             >
               <Box
                 sx={{
-                  position: 'relative',
-                  minWidth: 400,
-                  width: 'fit-content',
-                  borderRadius: 2,
-                  background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.18) 0%, rgba(245, 158, 11, 0.1) 100%)',
-                  border: '2px solid rgba(249, 115, 22, 0.5)',
-                  boxShadow: '0 2px 12px rgba(249, 115, 22, 0.15)',
-                  overflow: 'visible',
-                  '@keyframes adviceBounce': {
-                    '0%, 85%, 100%': { transform: 'translateY(0)' },
-                    '90%': { transform: 'translateY(-8px)' },
-                    '95%': { transform: 'translateY(2px)' },
-                  },
-                  animation: 'adviceBounce 3s ease-in-out infinite',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: -10,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: 0,
-                    height: 0,
-                    borderLeft: '12px solid transparent',
-                    borderRight: '12px solid transparent',
-                    borderTop: '14px solid rgba(249, 115, 22, 0.4)',
-                  },
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: -6,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: 0,
-                    height: 0,
-                    borderLeft: '10px solid transparent',
-                    borderRight: '10px solid transparent',
-                    borderTop: '12px solid #fff9f5',
-                  },
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  px: 1.25,
+                  py: 0.4,
+                  background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+                  color: '#fff',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  borderRadius: '10px 10px 10px 4px',
                 }}
               >
-                <Box
+                <LightbulbOutlinedIcon sx={{ fontSize: 16 }} />
+                ワンポイントアドバイス
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, p: { xs: 1, sm: 1.5 }, pt: { xs: 1, sm: 1.25 } }}>
+                <EditIcon sx={{ fontSize: { xs: 18, sm: 20 }, color: '#f97316', mt: 0.15, flexShrink: 0 }} />
+                <Typography
+                  component="div"
                   sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    px: 1.25,
-                    py: 0.4,
-                    background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
-                    color: '#fff',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    borderRadius: '10px 10px 10px 4px',
+                    fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                    color: '#3d2c1e',
+                    lineHeight: 1.7,
+                    fontWeight: 600,
                   }}
                 >
-                  <LightbulbOutlinedIcon sx={{ fontSize: 16 }} />
-                  ワンポイントアドバイス
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, p: 1.5, pt: 1.25 }}>
-                  <EditIcon sx={{ fontSize: 20, color: '#f97316', mt: 0.15, flexShrink: 0 }} />
-                  <Typography
-                    component="div"
-                    sx={{
-                      fontSize: '0.9rem',
-                      color: '#3d2c1e',
-                      lineHeight: 1.7,
-                      fontWeight: 600,
-                    }}
-                  >
-                    <Box component="span" sx={{ display: 'block', whiteSpace: 'nowrap' }}>
-                      プロフィールを入力すると診断に反映されます。
-                    </Box>
-                    <Box component="span" sx={{ display: 'block', whiteSpace: 'nowrap' }}>
-                      　プロフィールを充実させましょう。
-                    </Box>
-                  </Typography>
-                </Box>
+                  <Box component="span" sx={{ display: 'block', whiteSpace: { xs: 'normal', sm: 'nowrap' } }}>
+                    プロフィールを入力すると診断に反映されます。
+                  </Box>
+                  <Box component="span" sx={{ display: 'block', whiteSpace: { xs: 'normal', sm: 'nowrap' } }}>
+                    プロフィールを充実させましょう。
+                  </Box>
+                </Typography>
               </Box>
             </Box>
-            {actionItems.map((item, index) => {
+          </Box>
+
+          {/* アクションカード：幅に応じて1行〜複数行に自然に折り返し（flexbox） */}
+          <Box
+            sx={{
+              p: { xs: 1, sm: 2, md: 2.5 },
+              pt: 1,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: { xs: 0.75, sm: 1 },
+              width: '100%',
+            }}
+          >
+            {actionItems.map((item) => {
               const Icon = item.icon;
               const isMain = 'main' in item && item.main;
               return (
                 <Box
                   key={item.href}
                   sx={{
-                    gridRow: 2,
-                    gridColumn: index + 1,
-                    minWidth: 0,
+                    flex: isMain ? '2 1 220px' : '1 1 100px',
+                    minWidth: isMain ? 180 : 85,
                   }}
                 >
                   <Link href={item.href} style={{ textDecoration: 'none', minWidth: 0, display: 'block' }}>
@@ -355,9 +347,9 @@ export default function DashboardPage() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: 1,
-                        py: 2.25,
-                        px: 1.5,
+                        gap: { xs: 0.4, sm: 1 },
+                        py: { xs: 1.25, sm: 2, md: 2.25 },
+                        px: { xs: 0.5, sm: 1.5 },
                         borderRadius: 1.5,
                         background: isMain
                           ? 'linear-gradient(135deg, rgba(254, 215, 170, 0.7) 0%, rgba(253, 186, 116, 0.5) 50%, rgba(251, 146, 60, 0.25) 100%)'
@@ -367,7 +359,7 @@ export default function DashboardPage() {
                           ? '0 4px 20px rgba(249, 115, 22, 0.3), 0 0 0 1px rgba(249, 115, 22, 0.15)'
                           : '0 2px 10px rgba(139, 90, 43, 0.08)',
                         transition: 'all 0.2s ease',
-                        minHeight: 95,
+                        minHeight: { xs: 80, sm: 95 },
                         minWidth: 0,
                         '@keyframes mainGlow': {
                           '0%, 100%': { boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3), 0 0 0 1px rgba(249, 115, 22, 0.15)' },
@@ -387,8 +379,8 @@ export default function DashboardPage() {
                     >
                       <Box
                         sx={{
-                          width: 44,
-                          height: 44,
+                          width: { xs: 32, sm: 44 },
+                          height: { xs: 32, sm: 44 },
                           borderRadius: '10px',
                           display: 'flex',
                           alignItems: 'center',
@@ -403,14 +395,14 @@ export default function DashboardPage() {
                       >
                         <Icon
                           sx={{
-                            fontSize: 24,
+                            fontSize: { xs: 18, sm: 24 },
                             color: item.primary || isMain ? '#fff' : '#f97316',
                           }}
                         />
                       </Box>
                       <Typography
                         sx={{
-                          fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                          fontSize: isMain ? { xs: '0.9rem', sm: '1.15rem' } : { xs: '0.7rem', sm: '0.9rem' },
                           fontWeight: 600,
                           color: '#3d2c1e',
                           textAlign: 'center',
@@ -427,18 +419,18 @@ export default function DashboardPage() {
             })}
           </Box>
 
-          <Box sx={{ px: 2.5, pb: 2.5, pt: 0.75 }}>
+          <Box sx={{ px: { xs: 1.5, sm: 2, md: 2.5 }, pb: { xs: 2, sm: 2.5 }, pt: 0.75 }}>
             <Button
               fullWidth
               variant="contained"
               startIcon={<LogoutIcon />}
               onClick={() => setLogoutDialogOpen(true)}
               sx={{
-                py: 1.4,
+                py: { xs: 1.25, sm: 1.4 },
                 borderRadius: '9999px',
                 textTransform: 'none',
                 fontWeight: 600,
-                fontSize: '1rem',
+                fontSize: { xs: '0.95rem', sm: '1rem' },
                 background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
                 color: '#fff',
                 border: 'none',

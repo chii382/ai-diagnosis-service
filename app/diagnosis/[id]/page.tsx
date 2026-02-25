@@ -29,7 +29,9 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LockIcon from '@mui/icons-material/Lock';
 import dynamic from 'next/dynamic';
+import { motion } from 'motion/react';
 
 const DiagnosisRadarChart = dynamic(() => import('@/app/components/diagnosis/DiagnosisRadarChart'), {
   ssr: false,
@@ -389,6 +391,59 @@ export default function DiagnosisDetailPage() {
             </Box>
           </Box>
         )}
+
+        {/* あなたの適職はズバリこれ（会員限定プレビュー） */}
+        <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
+          <CardContent>
+            <Box
+              component={motion.div}
+              animate={{ y: [0, -12, 0] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#ea580c', mb: 2 }}>
+                あなたの適職はズバリこれ！
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                position: 'relative',
+                minHeight: 120,
+                borderRadius: 2,
+                overflow: 'hidden',
+                bgcolor: 'rgba(139, 90, 43, 0.04)',
+              }}
+            >
+              <Box
+                sx={{
+                  p: 2,
+                  filter: 'blur(6px)',
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                }}
+              >
+                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8 }}>
+                  あなたの回答を分析した結果、最も適性が高い職種・業種の組み合わせをご提案します。保存・履歴・編集・比較など会員機能をご利用いただくと、この詳細結果をご確認いただけます。
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'linear-gradient(180deg, rgba(255,251,245,0.6) 0%, rgba(255,247,237,0.85) 100%)',
+                }}
+              >
+                <LockIcon sx={{ fontSize: 48, color: '#8b5a2b', opacity: 0.7, mb: 1 }} />
+                <Typography variant="body1" sx={{ fontWeight: 600, color: '#5c4033', textAlign: 'center' }}>
+                  アップグレードすると確認することができます
+                </Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
 
         {/* 分析サマリー */}
         <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>

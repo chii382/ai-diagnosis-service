@@ -194,12 +194,15 @@ export default function Header() {
           <ListItemButton
             onClick={handleAdminLoginClick}
             sx={{
-              color: '#fef3e2',
+              color: '#fff',
               fontWeight: 500,
               borderRadius: '9999px',
               backgroundColor: '#3d2c1e',
+              '& .MuiListItemText-primary': { color: '#fff' },
               '&:hover': {
                 backgroundColor: '#2d1f14',
+                color: '#fff',
+                '& .MuiListItemText-primary': { color: '#fff' },
               },
             }}
           >

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Typography, TextField, Button } from '@mui/material';
+import { Box, Container, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 import { motion } from 'motion/react';
 
 export default function ContactSection() {
@@ -11,13 +11,15 @@ export default function ContactSection() {
     email: '',
     message: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitMessage, setSubmitMessage] = useState('');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
     const handleHashChange = () => {
       if (window.location.hash === '#contact') {
-        // すぐにアニメーションをリセット（スクロール開始時）
         setAnimationKey(prev => prev + 1);
       }
     };
@@ -26,10 +28,32 @@ export default function ContactSection() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // フォーム送信処理（実装予定）
-    setFormData({ name: '', email: '', message: '' });
+    setSubmitting(true);
+    setSubmitStatus('idle');
+    setSubmitMessage('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setSubmitStatus('error');
+        setSubmitMessage(data.error ?? '送信に失敗しました。');
+        return;
+      }
+      setSubmitStatus('success');
+      setSubmitMessage('送信が完了しました。ご入力のメールアドレスへ確認メールをお送りしました。');
+      setFormData({ name: '', email: '', message: '' });
+    } catch {
+      setSubmitStatus('error');
+      setSubmitMessage('送信に失敗しました。しばらくしてから再度お試しください。');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -130,10 +154,22 @@ export default function ContactSection() {
             rows={6}
             sx={{ mb: 3 }}
           />
+          {submitStatus === 'success' && (
+            <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSubmitStatus('idle')}>
+              {submitMessage}
+            </Alert>
+          )}
+          {submitStatus === 'error' && (
+            <Alert severity="error" sx={{ mb: 2 }} onClose={() => setSubmitStatus('idle')}>
+              {submitMessage}
+            </Alert>
+          )}
           <Button
             type="submit"
             variant="contained"
             fullWidth
+            disabled={submitting}
+            startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : undefined}
             sx={{
               background: 'linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ed8936 100%)',
               color: '#ffffff',
@@ -145,7 +181,7 @@ export default function ContactSection() {
               },
             }}
           >
-            送信する
+            {submitting ? '送信中...' : '送信する'}
           </Button>
         </Box>
         </motion.div>
