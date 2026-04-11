@@ -84,7 +84,7 @@ export default function PricingSection() {
         {/* セクションタイトル */}
         <motion.div
           key={`title-${animationKey}`}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, margin: '-100px 0px' }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -116,7 +116,7 @@ export default function PricingSection() {
         {/* プランカード */}
         <motion.div
           key={`plans-${animationKey}`}
-          initial={{ opacity: 0, y: 50 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, margin: '-100px 0px' }}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}

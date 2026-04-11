@@ -22,7 +22,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LockIcon from '@mui/icons-material/Lock';
 import dynamic from 'next/dynamic';
-import { motion } from 'motion/react';
+import { normalizeSimpleDiagnosisSummary } from '@/lib/diagnosisSimpleSummary';
 
 const DiagnosisRadarChart = dynamic(() => import('@/app/components/diagnosis/DiagnosisRadarChart'), { ssr: false });
 
@@ -154,6 +154,7 @@ export default function DiagnosisFreeResultPage() {
   const strengthsAnalysis = replaceUserWithYou(safeStr(result.strengthsAnalysis));
   const suitableJobsAnalysis = replaceUserWithYou(safeStr(result.suitableJobsAnalysis));
   const strengths = Array.isArray(result.strengths) ? result.strengths.filter((s): s is string => typeof s === 'string') : [];
+  const simpleLines = normalizeSimpleDiagnosisSummary(result.simpleDiagnosisSummary, summary);
   const skillScores = (result.skillScores as Record<string, number>) || deriveSkillScoresFromAnswers(answers);
   type AptitudeCategory = Record<string, Array<{ name: string; score: number }>>;
   const aptitudeScores = (result.aptitudeScores as AptitudeCategory) || deriveAptitudeScoresFromAnswers(answers);
@@ -232,153 +233,169 @@ export default function DiagnosisFreeResultPage() {
           </Box>
         )}
 
-        {/* あなたの適職はズバリこれ（会員限定プレビュー） */}
-        <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
+        <Card
+          sx={{
+            mb: 3,
+            borderRadius: 3,
+            boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)',
+            border: '1px solid rgba(249, 115, 22, 0.22)',
+            bgcolor: '#fffefb',
+          }}
+        >
           <CardContent>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>
+              簡易診断結果
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              {simpleLines.map((line, i) => (
+                <Typography key={i} variant="body1" sx={{ color: '#5c4033', lineHeight: 1.85 }}>
+                  {line}
+                </Typography>
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>
+            詳細分析サマリー
+          </Typography>
+          <Box sx={{ position: 'relative' }}>
             <Box
-              component={motion.div}
-              animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3,
+                filter: 'blur(8px)',
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#ea580c', mb: 2 }}>
-                あなたの適職はズバリこれ！
-              </Typography>
+              <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
+                <CardContent>
+                {summary && <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8, mb: 2 }}>{summary}</Typography>}
+                {strengthsAnalysis && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>強みの詳細分析</Typography>
+                    <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8 }}>{strengthsAnalysis}</Typography>
+                  </Box>
+                )}
+                {suitableJobsAnalysis && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>向いている職種・業種の分析</Typography>
+                    <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8 }}>{suitableJobsAnalysis}</Typography>
+                  </Box>
+                )}
+                {!summary && !strengthsAnalysis && !suitableJobsAnalysis && (
+                  <Typography variant="body2" sx={{ color: '#5c4033', fontStyle: 'italic' }}>分析結果を取得できませんでした。</Typography>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>強み</Typography>
+                {strengths.length > 0 ? (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {strengths.map((s, i) => (
+                      <Chip key={i} label={s} sx={{ bgcolor: 'rgba(249, 115, 22, 0.12)', color: '#ea580c' }} />
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography variant="body2" sx={{ color: '#5c4033', fontStyle: 'italic' }}>（強みの分析結果がありません）</Typography>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2, whiteSpace: 'nowrap' }}>適正スコア表</Typography>
+                {Object.keys(aptitudeScores).length > 0 ? (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    {Object.entries(aptitudeScores).map(([category, items]) => {
+                      const validItems = Array.isArray(items) ? items.filter((i): i is { name: string; score: number } => i && typeof i === 'object' && typeof i.name === 'string') : [];
+                      return validItems.length > 0 ? (
+                        <Box key={category}>
+                          <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 1, borderBottom: '2px solid rgba(249, 115, 22, 0.3)', pb: 0.5, display: 'inline-block' }}>{category}</Typography>
+                          <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, boxShadow: 'none', border: '1px solid rgba(139, 90, 43, 0.12)', overflow: 'hidden' }}>
+                            <Table size="small">
+                              <TableHead>
+                                <TableRow sx={{ bgcolor: 'rgba(249, 115, 22, 0.06)' }}>
+                                  <TableCell sx={{ fontWeight: 600, color: '#3d2c1e' }}>項目</TableCell>
+                                  <TableCell sx={{ fontWeight: 600, color: '#3d2c1e', width: 100, whiteSpace: 'nowrap' }} align="right">適正スコア</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {[...validItems].sort((a, b) => (b.score || 0) - (a.score || 0)).map((item, idx) => (
+                                  <TableRow key={idx} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell sx={{ color: '#5c4033' }}>{item.name}</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 600, color: '#f97316' }}>{typeof item.score === 'number' ? item.score.toFixed(1) : '-'}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Box>
+                      ) : null;
+                    })}
+                  </Box>
+                ) : (
+                  <Typography variant="body2" sx={{ color: '#5c4033', fontStyle: 'italic' }}>（適正スコアデータがありません）</Typography>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>キャリアロードマップ</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>短期（〜6ヶ月）</Typography>
+                    <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.7 }}>{roadmap.shortTerm || '（未設定）'}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>中期（6ヶ月〜2年）</Typography>
+                    <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.7 }}>{roadmap.midTerm || '（未設定）'}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>長期（2年以上）</Typography>
+                    <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.7 }}>{roadmap.longTerm || '（未設定）'}</Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
             </Box>
             <Box
               sx={{
-                position: 'relative',
-                minHeight: 120,
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                pt: { xs: 3, sm: 4 },
+                background: 'linear-gradient(180deg, rgba(255,251,245,0.6) 0%, rgba(255,247,237,0.85) 100%)',
                 borderRadius: 2,
-                overflow: 'hidden',
-                bgcolor: 'rgba(139, 90, 43, 0.04)',
+                px: 2,
               }}
             >
-              <Box
+              <LockIcon sx={{ fontSize: 44, color: '#8b5a2b', opacity: 0.85, mb: 0.75 }} />
+              <Typography
+                variant="body1"
                 sx={{
-                  p: 2,
-                  filter: 'blur(6px)',
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+                  fontWeight: 600,
+                  color: '#5c4033',
+                  textAlign: 'center',
+                  lineHeight: 1.55,
+                  whiteSpace: 'nowrap',
+                  fontSize: { xs: '0.6875rem', sm: '1rem' },
                 }}
               >
-                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8 }}>
-                  あなたの回答を分析した結果、最も適性が高い職種・業種の組み合わせをご提案します。保存・履歴・編集・比較など会員機能をご利用いただくと、この詳細結果をご確認いただけます。
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: 'linear-gradient(180deg, rgba(255,251,245,0.6) 0%, rgba(255,247,237,0.85) 100%)',
-                }}
-              >
-                <LockIcon sx={{ fontSize: 48, color: '#8b5a2b', opacity: 0.7, mb: 1 }} />
-                <Typography variant="body1" sx={{ fontWeight: 600, color: '#5c4033', textAlign: 'center' }}>
-                  アップグレードすると確認することができます
-                </Typography>
-              </Box>
+                有料版にアップグレードすると確認することができます
+              </Typography>
             </Box>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>分析サマリー</Typography>
-            {summary && <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8, mb: 2 }}>{summary}</Typography>}
-            {strengthsAnalysis && (
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>強みの詳細分析</Typography>
-                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8 }}>{strengthsAnalysis}</Typography>
-              </Box>
-            )}
-            {suitableJobsAnalysis && (
-              <Box>
-                <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>向いている職種・業種の分析</Typography>
-                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.8 }}>{suitableJobsAnalysis}</Typography>
-              </Box>
-            )}
-            {!summary && !strengthsAnalysis && !suitableJobsAnalysis && (
-              <Typography variant="body2" sx={{ color: '#5c4033', fontStyle: 'italic' }}>分析結果を取得できませんでした。</Typography>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>強み</Typography>
-            {strengths.length > 0 ? (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {strengths.map((s, i) => (
-                  <Chip key={i} label={s} sx={{ bgcolor: 'rgba(249, 115, 22, 0.12)', color: '#ea580c' }} />
-                ))}
-              </Box>
-            ) : (
-              <Typography variant="body2" sx={{ color: '#5c4033', fontStyle: 'italic' }}>（強みの分析結果がありません）</Typography>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2, whiteSpace: 'nowrap' }}>適正スコア表</Typography>
-            {Object.keys(aptitudeScores).length > 0 ? (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {Object.entries(aptitudeScores).map(([category, items]) => {
-                  const validItems = Array.isArray(items) ? items.filter((i): i is { name: string; score: number } => i && typeof i === 'object' && typeof i.name === 'string') : [];
-                  return validItems.length > 0 ? (
-                    <Box key={category}>
-                      <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 1, borderBottom: '2px solid rgba(249, 115, 22, 0.3)', pb: 0.5, display: 'inline-block' }}>{category}</Typography>
-                      <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, boxShadow: 'none', border: '1px solid rgba(139, 90, 43, 0.12)', overflow: 'hidden' }}>
-                        <Table size="small">
-                          <TableHead>
-                            <TableRow sx={{ bgcolor: 'rgba(249, 115, 22, 0.06)' }}>
-                              <TableCell sx={{ fontWeight: 600, color: '#3d2c1e' }}>項目</TableCell>
-                              <TableCell sx={{ fontWeight: 600, color: '#3d2c1e', width: 100, whiteSpace: 'nowrap' }} align="right">適正スコア</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {[...validItems].sort((a, b) => (b.score || 0) - (a.score || 0)).map((item, idx) => (
-                              <TableRow key={idx} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell sx={{ color: '#5c4033' }}>{item.name}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 600, color: '#f97316' }}>{typeof item.score === 'number' ? item.score.toFixed(1) : '-'}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Box>
-                  ) : null;
-                })}
-              </Box>
-            ) : (
-              <Typography variant="body2" sx={{ color: '#5c4033', fontStyle: 'italic' }}>（適正スコアデータがありません）</Typography>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>キャリアロードマップ</Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box>
-                <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>短期（〜6ヶ月）</Typography>
-                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.7 }}>{roadmap.shortTerm || '（未設定）'}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>中期（6ヶ月〜2年）</Typography>
-                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.7 }}>{roadmap.midTerm || '（未設定）'}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" sx={{ color: '#f97316', fontWeight: 600, mb: 0.5 }}>長期（2年以上）</Typography>
-                <Typography variant="body1" sx={{ color: '#5c4033', lineHeight: 1.7 }}>{roadmap.longTerm || '（未設定）'}</Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
+          </Box>
+        </Box>
 
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <Link href="/" style={{ textDecoration: 'none' }}>

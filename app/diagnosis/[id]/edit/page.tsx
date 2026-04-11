@@ -207,7 +207,7 @@ export default function DiagnosisEditPage() {
           <CardContent>
             <form onSubmit={handleSubmit}>
               <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>
-                分析サマリー
+                詳細分析サマリー
               </Typography>
               <TextField
                 fullWidth

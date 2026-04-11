@@ -107,7 +107,7 @@ export default function HeroSection() {
         }}
       >
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
           style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}
@@ -127,7 +127,7 @@ export default function HeroSection() {
             {/* メインタイトル */}
             <motion.div
               key={`title-${animationKey}`}
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              initial={false}
               animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
               transition={{ 
                 duration: 0.8,
@@ -157,7 +157,7 @@ export default function HeroSection() {
             {/* サブコピー */}
             <motion.div
               key={`subcopy-${animationKey}`}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ 
                 duration: 0.6,
@@ -188,7 +188,7 @@ export default function HeroSection() {
             {/* CTAボタン or ログアウト（ログイン中） */}
             <motion.div
               key={`button-${animationKey}`}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ 
                 duration: 0.6,

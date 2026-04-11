@@ -28,8 +28,25 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const FREE_DIAGNOSIS_KEY = 'free_diagnosis_done';
+/** お試し診断の利用回数（完了1回ごとに +1） */
+const FREE_DIAGNOSIS_COUNT_KEY = 'free_diagnosis_count';
+/** 旧仕様（1回のみ）のフラグ — 初回読み込みで count に移行 */
+const LEGACY_FREE_DIAGNOSIS_DONE_KEY = 'free_diagnosis_done';
+const FREE_TRIAL_MAX = 3;
 const FREE_RESULT_STORAGE = 'free_diagnosis_result';
+
+function readTrialCountFromStorage(): number {
+  if (typeof window === 'undefined') return 0;
+  if (localStorage.getItem(FREE_DIAGNOSIS_COUNT_KEY) === null && localStorage.getItem(LEGACY_FREE_DIAGNOSIS_DONE_KEY) === 'true') {
+    localStorage.setItem(FREE_DIAGNOSIS_COUNT_KEY, '1');
+    localStorage.removeItem(LEGACY_FREE_DIAGNOSIS_DONE_KEY);
+  }
+  const raw = localStorage.getItem(FREE_DIAGNOSIS_COUNT_KEY);
+  if (raw === null) return 0;
+  const n = parseInt(raw, 10);
+  if (!Number.isFinite(n)) return 0;
+  return Math.min(Math.max(n, 0), FREE_TRIAL_MAX);
+}
 
 const QUESTIONS = [
   { key: 'q1', label: '現在のキャリア状況は？', options: ['転職を検討している', '現在の仕事でスキルアップしたい', '副業・兼業を始めたい', '起業・独立を考えている', 'キャリアの方向性を模索している'] },
@@ -50,13 +67,17 @@ export default function DiagnosisFreePage() {
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [alreadyDone, setAlreadyDone] = useState<boolean | null>(null);
+  /** null: localStorage 未読込 */
+  const [trialCount, setTrialCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setAlreadyDone(localStorage.getItem(FREE_DIAGNOSIS_KEY) === 'true');
+      setTrialCount(readTrialCountFromStorage());
     }
   }, []);
+
+  const limitReached = trialCount !== null && trialCount >= FREE_TRIAL_MAX;
+  const remainingTrials = trialCount === null ? null : Math.max(0, FREE_TRIAL_MAX - trialCount);
 
   const handleChange = (key: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
@@ -68,7 +89,7 @@ export default function DiagnosisFreePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValid || loading || alreadyDone) return;
+    if (!isValid || loading || limitReached) return;
 
     setLoading(true);
     setError(null);
@@ -83,7 +104,8 @@ export default function DiagnosisFreePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || '診断の実行に失敗しました');
 
-      localStorage.setItem(FREE_DIAGNOSIS_KEY, 'true');
+      const next = Math.min(readTrialCountFromStorage() + 1, FREE_TRIAL_MAX);
+      localStorage.setItem(FREE_DIAGNOSIS_COUNT_KEY, String(next));
       sessionStorage.setItem(FREE_RESULT_STORAGE, JSON.stringify(data));
       router.push('/diagnosis-free/result');
     } catch (err) {
@@ -93,7 +115,7 @@ export default function DiagnosisFreePage() {
     }
   };
 
-  if (alreadyDone === null) {
+  if (trialCount === null) {
     return (
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fffbf5' }}>
         <CircularProgress sx={{ color: '#f97316' }} />
@@ -134,17 +156,22 @@ export default function DiagnosisFreePage() {
           />
         </Box>
         <Typography variant="body1" sx={{ color: '#5c4033', mb: 2 }}>
-          5問に答えるだけで、AIがあなたのキャリアロードマップを提案します（無料・1回限定・ログイン不要）
+          5問に答えるだけで、AIがあなたのキャリアロードマップを提案します（お試しは3回まで・ログイン不要）
         </Typography>
+        {trialCount !== null && !limitReached && remainingTrials !== null && remainingTrials > 0 && (
+          <Typography variant="body2" sx={{ color: '#8b7355', mb: 2 }}>
+            お試し診断はあと{remainingTrials}回ご利用いただけます。
+          </Typography>
+        )}
 
-        {alreadyDone ? (
+        {limitReached ? (
           <Card sx={{ p: 3, boxShadow: '0 20px 60px rgba(139, 90, 43, 0.12)', borderRadius: 3, border: '1px solid rgba(139, 90, 43, 0.08)' }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>
-                無料診断は1回のみご利用いただけます
+                お試し無料診断は3回までご利用いただけます
               </Typography>
               <Typography variant="body1" sx={{ color: '#5c4033', mb: 3 }}>
-                すでに無料診断を実行済みです。会員登録すると、何度でも診断でき、診断結果の履歴も保存されます。
+                お試し診断の回数を使い切りました。会員登録すると、何度でも診断でき、診断結果の履歴も保存されます。
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <Link href="/" style={{ textDecoration: 'none' }}>

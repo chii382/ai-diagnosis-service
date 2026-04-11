@@ -87,7 +87,7 @@ export default function CTAButton({ variant = 'primary', size = 'large', fullWid
               textShadow: '0 2px 4px rgba(0,0,0,0.25), 0 0 12px rgba(254,240,138,0.5)',
             }}
           >
-            無料
+            お試し
           </Box>
           <Box component="span" sx={{ fontSize: size === 'large' ? '1rem' : '0.9rem' }}>で</Box>
         </Box>

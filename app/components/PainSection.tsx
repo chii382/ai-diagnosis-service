@@ -16,7 +16,7 @@ export default function PainSection() {
     >
       <Container maxWidth="lg">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, margin: '-120px 0px' }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -57,7 +57,7 @@ export default function PainSection() {
             {/* 右側：テキストと悩みリスト */}
             <Box>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, margin: '-120px 0px' }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -92,7 +92,7 @@ export default function PainSection() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, margin: '-120px 0px' }}
                 transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}

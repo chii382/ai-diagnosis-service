@@ -20,7 +20,7 @@ export default function Home() {
         <Header />
       </Suspense>
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={false}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
