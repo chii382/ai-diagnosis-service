@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { MongoClient } from 'mongodb';
+import { PLAN_FREE, normalizePlan } from '@/lib/plan';
 
 // MongoDB接続を再利用するためのシングルトンパターン
 let client: MongoClient | null = null;
@@ -57,6 +58,7 @@ export async function GET(request: NextRequest) {
         image: session.user.image ?? null,
         emailVerified: null,
         role: defaultRole,
+        plan: PLAN_FREE,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -72,6 +74,7 @@ export async function GET(request: NextRequest) {
       email: user.email,
       image: user.image,
       emailVerified: user.emailVerified,
+      plan: normalizePlan(user.plan),
       gender: user.gender ?? '',
       ageGroup: user.ageGroup ?? '',
       jobType: user.jobType ?? '',
@@ -153,6 +156,7 @@ export async function PUT(request: NextRequest) {
         image: typeof image === 'string' ? image : session.user.image ?? null,
         emailVerified: null,
         role: defaultRole,
+        plan: PLAN_FREE,
         gender: gender ?? '',
         ageGroup: ageGroup ?? '',
         jobType: jobType ?? '',
@@ -170,6 +174,7 @@ export async function PUT(request: NextRequest) {
       email: updatedUser?.email,
       image: updatedUser?.image,
       emailVerified: updatedUser?.emailVerified,
+      plan: normalizePlan(updatedUser?.plan),
       gender: updatedUser?.gender ?? '',
       ageGroup: updatedUser?.ageGroup ?? '',
       jobType: updatedUser?.jobType ?? '',

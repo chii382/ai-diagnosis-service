@@ -1,12 +1,65 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Container, Typography, Card, CardContent } from '@mui/material';
+import { useSession } from 'next-auth/react';
+import { Box, Container, Typography, Card, CardContent, CircularProgress } from '@mui/material';
 import { motion } from 'motion/react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckoutButton from './CheckoutButton';
+import { PLAN_PRO } from '@/lib/plan';
+
+type PricingPlan =
+  | {
+      name: string;
+      price: string;
+      period: string;
+      features: string[];
+      note: string;
+    }
+  | {
+      name: string;
+      price: string;
+      period: string;
+      features: string[];
+      cta: 'checkout';
+    };
 
 export default function PricingSection() {
+  const { status } = useSession();
   const [animationKey, setAnimationKey] = useState(0);
+  /** ログイン時のみ取得。null は未ログインまたは読み込み中 */
+  const [userPlan, setUserPlan] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      setUserPlan(null);
+      return;
+    }
+    if (status !== 'authenticated') return;
+
+    let cancelled = false;
+    setUserPlan(null);
+    void fetch('/api/user/profile', { credentials: 'include' })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('profile'))))
+      .then((data: { plan?: number }) => {
+        if (!cancelled) {
+          setUserPlan(typeof data.plan === 'number' ? data.plan : 0);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setUserPlan(0);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [status]);
+
+  const showProCheckout =
+    status === 'unauthenticated' ||
+    (status === 'authenticated' && userPlan !== null && userPlan !== PLAN_PRO);
+  const proPlanLoading =
+    status === 'loading' || (status === 'authenticated' && userPlan === null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -22,51 +75,26 @@ export default function PricingSection() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const plans = [
+  const plans: PricingPlan[] = [
     {
-      name: '無料プラン',
+      name: 'フリープラン（無料）',
       price: '¥0',
       period: '完全無料・永続的',
-      features: [
-        '5問の簡単な質問に回答',
-        'AIによる基本的な分析',
-        'シンプルなキャリアロードマップ',
-        '月1回まで診断可能',
-      ],
+      features: ['5問の簡単な質問に回答', 'AIによる簡易診断結果'],
       note: '※ 追加の費用や登録料は一切かかりません',
-      highlighted: false,
     },
     {
-      name: 'スタンダードプラン',
+      name: 'プロプラン（有料）',
       price: '¥980',
       period: '月額',
       features: [
         '5問の簡単な質問に回答',
-        'AIによる深い分析',
-        'パーソナライズされたキャリアロードマップ',
-        '具体的な次のステップの提案',
-        '月5回まで診断可能',
-        '詳細レポートのダウンロード',
+        'AIによる簡易診断結果',
+        'AIによる詳細キャリアロードマップ作成',
+        '診断履歴の保存・比較',
+        '結果のPDFダウンロード',
       ],
-      note: '※ 初月無料キャンペーン実施中',
-      highlighted: true,
-    },
-    {
-      name: 'プレミアムプラン',
-      price: '¥2,980',
-      period: '月額',
-      features: [
-        '5問の簡単な質問に回答',
-        'AIによる深い分析',
-        'パーソナライズされたキャリアロードマップ',
-        '具体的な次のステップの提案',
-        '無制限で診断可能',
-        '詳細レポートのダウンロード',
-        '専属キャリアアドバイザーサポート',
-        '優先的な新機能へのアクセス',
-      ],
-      note: '※ 初月無料キャンペーン実施中',
-      highlighted: false,
+      cta: 'checkout',
     },
   ];
 
@@ -124,64 +152,31 @@ export default function PricingSection() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
             gap: { xs: 4, md: 3 },
             alignItems: 'stretch',
             pt: { xs: 4, md: 5 },
             overflow: 'visible',
+            maxWidth: 920,
+            mx: 'auto',
           }}
         >
           {plans.map((plan, index) => (
-            <Box
-              key={index}
-              sx={{
-                position: 'relative',
-                pt: plan.highlighted ? { xs: 2, md: 2.5 } : 0,
-              }}
-            >
-              {plan.highlighted && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: '#f97316',
-                    color: '#ffffff',
-                    px: 2.5,
-                    py: 0.75,
-                    borderRadius: 2,
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    zIndex: 2,
-                    boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  おすすめ
-                </Box>
-              )}
+            <Box key={index} sx={{ position: 'relative' }}>
               <Card
                 sx={{
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
                   textAlign: 'center',
-                  border: plan.highlighted
-                    ? '3px solid #f97316'
-                    : '2px solid rgba(249, 115, 22, 0.2)',
-                  background: plan.highlighted
-                    ? 'linear-gradient(180deg, #fff7ed 0%, #fffbf5 100%)'
-                    : 'linear-gradient(180deg, #ffffff 0%, #fffbf5 100%)',
-                  boxShadow: plan.highlighted
-                    ? '0 20px 40px rgba(249, 115, 22, 0.25)'
-                    : '0 20px 40px rgba(249, 115, 22, 0.15)',
-                  transform: plan.highlighted ? { md: 'scale(1.05)' } : 'none',
+                  border: '2px solid rgba(249, 115, 22, 0.2)',
+                  background: 'linear-gradient(180deg, #ffffff 0%, #fffbf5 100%)',
+                  boxShadow: '0 20px 40px rgba(249, 115, 22, 0.15)',
                   position: 'relative',
                   transition: 'transform 0.3s ease',
                   overflow: 'visible',
                   '&:hover': {
-                    transform: plan.highlighted ? { md: 'scale(1.08)' } : { md: 'scale(1.02)' },
+                    transform: { md: 'scale(1.02)' },
                   },
                 }}
               >
@@ -247,17 +242,47 @@ export default function PricingSection() {
                     ))}
                   </Box>
 
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: '#5c4033',
-                      fontStyle: 'italic',
-                      fontSize: { xs: '0.75rem', md: '0.8125rem' },
-                      mt: 'auto',
-                    }}
-                  >
-                    {plan.note}
-                  </Typography>
+                  {'cta' in plan && plan.cta === 'checkout' ? (
+                    <Box sx={{ mt: 'auto', width: '100%', pt: 1, minHeight: proPlanLoading ? 52 : undefined }}>
+                      {proPlanLoading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
+                          <CircularProgress size={28} sx={{ color: '#f97316' }} />
+                        </Box>
+                      ) : showProCheckout ? (
+                        <CheckoutButton
+                          label="アップグレード"
+                          variant="contained"
+                          fullWidth
+                          size="medium"
+                          buttonSx={{
+                            bgcolor: '#f97316',
+                            color: '#fff',
+                            py: 1.25,
+                            fontSize: { xs: '0.95rem', md: '1rem' },
+                            fontWeight: 700,
+                            textTransform: 'none',
+                            boxShadow: '0 8px 20px rgba(249, 115, 22, 0.35)',
+                            '&:hover': {
+                              bgcolor: '#ea580c',
+                              boxShadow: '0 10px 24px rgba(234, 88, 12, 0.4)',
+                            },
+                          }}
+                        />
+                      ) : null}
+                    </Box>
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: '#5c4033',
+                        fontStyle: 'italic',
+                        fontSize: { xs: '0.75rem', md: '0.8125rem' },
+                        mt: 'auto',
+                      }}
+                    >
+                      {'note' in plan ? plan.note : ''}
+                    </Typography>
+                  )}
                 </CardContent>
               </Card>
             </Box>

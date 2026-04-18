@@ -5,6 +5,7 @@ import { requireAdmin } from '@/lib/requireAdmin';
 import { connectDB } from '@/lib/db';
 import Diagnosis from '@/models/Diagnosis';
 import { Types } from 'mongoose';
+import { PLAN_FREE, PLAN_PRO, normalizePlan } from '@/lib/plan';
 
 function parseId(id: string): Types.ObjectId | null {
   if (!Types.ObjectId.isValid(id)) return null;
@@ -78,6 +79,18 @@ export async function GET(
     } else {
       log('5. found, returning');
     }
+
+    let userPlan = PLAN_FREE;
+    if (session?.user?.email) {
+      const db = (await import('mongoose')).default.connection.db;
+      if (db) {
+        const u = await db.collection('users').findOne({ email: session.user.email });
+        userPlan = normalizePlan(u?.plan);
+      }
+    }
+    const viewerPlan =
+      session?.user?.role === 'admin' ? PLAN_PRO : userPlan;
+
     return NextResponse.json({
       id: diagnosis._id.toString(),
       answers: diagnosis.answers,
@@ -85,6 +98,9 @@ export async function GET(
       careerRoadmap: diagnosis.careerRoadmap,
       createdAt: diagnosis.createdAt,
       updatedAt: diagnosis.updatedAt,
+      viewerPlan,
+      /** ログインユーザーの DB 上のプラン（編集・削除ボタン表示などに使用） */
+      userPlan,
     });
   } catch (error) {
     console.error('Diagnosis GET [id] error:', error);

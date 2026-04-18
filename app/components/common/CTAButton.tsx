@@ -2,7 +2,6 @@
 
 import { Button, Box } from '@mui/material';
 import Image from 'next/image';
-import Link from 'next/link';
 
 interface CTAButtonProps {
   variant?: 'primary' | 'secondary';
@@ -15,12 +14,13 @@ export default function CTAButton({ variant = 'primary', size = 'large', fullWid
 
   return (
     <Button
-      component={Link}
+      component="a"
       href="/diagnosis-free"
       variant="contained"
       size={size}
       fullWidth={fullWidth}
         sx={{
+          textDecoration: 'none',
           background: isPrimary
             ? 'linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ed8936 100%)'
             : 'white',
@@ -63,8 +63,9 @@ export default function CTAButton({ variant = 'primary', size = 'large', fullWid
               filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.2))',
               transform: 'rotate(-15deg)',
               display: 'block',
+              pointerEvents: 'none',
             }}
-            aria-label="初心者マーク"
+            aria-hidden
           >
             <Image
               src="/images/shoshinsha-mark-transparent.png"

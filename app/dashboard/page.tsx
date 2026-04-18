@@ -24,10 +24,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import HomeIcon from '@mui/icons-material/Home';
 import Link from 'next/link';
+import PlanRibbonBadge from '@/app/components/PlanRibbonBadge';
+import { PLAN_PRO } from '@/lib/plan';
 
 interface ProfileData {
   name: string;
   image?: string;
+  /** 0=フリー, 1=プロ */
+  plan?: number;
 }
 
 const actionItems = [
@@ -57,11 +61,13 @@ export default function DashboardPage() {
           setProfileData({
             name: data.name || session.user?.name || '',
             image: data.image || session.user?.image || '',
+            plan: typeof data.plan === 'number' ? data.plan : 0,
           });
         } catch (e) {
           setProfileData({
             name: session.user?.name || '',
             image: session.user?.image || '',
+            plan: 0,
           });
         } finally {
           setProfileLoaded(true);
@@ -198,17 +204,27 @@ export default function DashboardPage() {
                     {!profileData.image && <PersonIcon sx={{ fontSize: { xs: 24, sm: 30 }, color: '#fff' }} />}
                   </Avatar>
                   <Box sx={{ minWidth: 0, flex: 1 }}>
-                    <Typography
+                    <Box
                       sx={{
-                        fontSize: { xs: '1.25rem', sm: '1.6rem' },
-                        fontWeight: 700,
-                        color: '#3d2c1e',
-                        letterSpacing: '-0.02em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: { xs: 1, sm: 1.25 },
+                        flexWrap: 'wrap',
                         mb: 0.25,
                       }}
                     >
-                      {profileData.name || 'ユーザー'}
-                    </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: { xs: '1.25rem', sm: '1.6rem' },
+                          fontWeight: 700,
+                          color: '#3d2c1e',
+                          letterSpacing: '-0.02em',
+                        }}
+                      >
+                        {profileData.name || 'ユーザー'}
+                      </Typography>
+                      <PlanRibbonBadge isPro={profileData.plan === PLAN_PRO} />
+                    </Box>
                     <Typography
                       sx={{
                         fontSize: { xs: '0.8rem', sm: '0.95rem' },

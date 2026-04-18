@@ -9,6 +9,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import SaveIcon from '@mui/icons-material/Save';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Link from 'next/link';
+import { PLAN_PRO } from '@/lib/plan';
 
 const AGE_OPTIONS = [
   { value: '', label: '選択しない' },
@@ -51,6 +52,8 @@ interface ProfileData {
   name: string;
   email: string;
   image?: string;
+  /** 0=フリー, 1=プロ */
+  plan?: number;
   gender?: string;
   ageGroup?: string;
   jobType?: string;
@@ -85,6 +88,7 @@ export default function ProfilePage() {
             name: data.name || session.user?.name || '',
             email: data.email || session.user?.email || '',
             image: data.image || session.user?.image || '',
+            plan: typeof data.plan === 'number' ? data.plan : 0,
             gender: data.gender ?? '',
             ageGroup: data.ageGroup ?? '',
             jobType: data.jobType ?? '',
@@ -96,6 +100,7 @@ export default function ProfilePage() {
             name: session.user?.name || '',
             email: session.user?.email || '',
             image: session.user?.image || '',
+            plan: 0,
             gender: '',
             ageGroup: '',
             jobType: '',
@@ -149,6 +154,7 @@ export default function ProfilePage() {
         ...prev,
         name: data.name ?? prev.name,
         image: data.image ?? prev.image,
+        plan: typeof data.plan === 'number' ? data.plan : prev.plan,
         gender: data.gender ?? prev.gender ?? '',
         ageGroup: data.ageGroup ?? prev.ageGroup ?? '',
         jobType: data.jobType ?? prev.jobType ?? '',
@@ -407,6 +413,7 @@ export default function ProfilePage() {
                           setProfileData((prev) => ({
                             ...prev,
                             image: data.image || result,
+                            plan: typeof data.plan === 'number' ? data.plan : prev.plan,
                           }));
                           setMessage({ type: 'success', text: 'アバターを更新しました' });
                         } catch (error) {
@@ -446,6 +453,13 @@ export default function ProfilePage() {
                   helperText="メールアドレスは変更できません"
                 />
               </Box>
+
+              <Typography variant="body2" sx={{ color: '#5c4033', mb: 1.5 }}>
+                現在のプラン:{' '}
+                <Box component="span" sx={{ fontWeight: 700, color: '#ea580c' }}>
+                  {profileData.plan === PLAN_PRO ? 'プロ' : 'フリー'}
+                </Box>
+              </Typography>
 
               <FormControl component="fieldset" sx={{ mt: 1, mb: 1, display: 'block' }}>
                 <FormLabel component="legend" sx={{ color: '#3d2c1e' }}>

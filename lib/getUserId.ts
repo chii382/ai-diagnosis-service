@@ -1,6 +1,7 @@
 import { Session } from 'next-auth';
 import { connectDB } from './db';
 import { Types } from 'mongoose';
+import { PLAN_FREE } from './plan';
 
 export async function getUserIdFromSession(session: Session | null): Promise<Types.ObjectId | null> {
   if (!session?.user?.email) {
@@ -33,6 +34,7 @@ export async function getUserIdFromSession(session: Session | null): Promise<Typ
       image: session.user.image ?? null,
       emailVerified: null,
       role: defaultRole,
+      plan: PLAN_FREE,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { motion } from 'motion/react';
-import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CTAButton from './common/CTAButton';
@@ -78,6 +77,7 @@ export default function HeroSection() {
           transform: 'translate(-50%, -50%)',
           objectFit: 'cover',
           zIndex: 0,
+          pointerEvents: 'none',
         }}
         src="/videos/hero-background.mp4"
         autoPlay
@@ -92,6 +92,7 @@ export default function HeroSection() {
           background:
             'linear-gradient(120deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 40%, rgba(15, 23, 42, 0.3) 100%)',
           zIndex: 1,
+          pointerEvents: 'none',
         }}
       />
 
@@ -195,7 +196,12 @@ export default function HeroSection() {
                 delay: 0.5,
                 ease: [0.16, 1, 0.3, 1]
               }}
-              style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                pointerEvents: 'auto',
+              }}
             >
               {isLoggedIn ? (
               <Box
@@ -262,60 +268,63 @@ export default function HeroSection() {
                   maxWidth: 760,
                 }}
               >
-                <Link href="/auth/signin" style={{ textDecoration: 'none', flex: 1, minWidth: 300 }}>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      fullWidth
-                      sx={{
-                        background: 'linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ed8936 100%)',
-                        color: '#ffffff',
-                        px: 6,
-                        py: 2.5,
-                        fontWeight: 700,
-                        letterSpacing: '0.05em',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.15)',
-                        boxShadow: '0 8px 30px rgba(251, 146, 60, 0.45)',
-                        borderRadius: 50,
-                        textTransform: 'none',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 0.25,
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%)',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 12px 40px rgba(251, 146, 60, 0.55)',
-                        },
-                      }}
-                    >
-                      <Box
-                        component="span"
-                        sx={{
-                          fontSize: '1rem',
-                          lineHeight: 1.2,
-                          whiteSpace: 'nowrap',
-                          color: '#3d2817',
-                          textShadow: '0 1px 2px rgba(255,255,255,0.3)',
-                        }}
-                      >
-                        会員様はこちら
-                      </Box>
-                      <Box
-                        component="span"
-                        sx={{
-                          fontSize: '1.65rem',
-                          fontWeight: 800,
-                          lineHeight: 1.2,
-                          color: '#fff',
-                          textShadow: '0 2px 4px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3)',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        ログイン
-                      </Box>
-                    </Button>
-                  </Link>
+                <Button
+                  component="a"
+                  href="/auth/signin"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  sx={{
+                    flex: 1,
+                    minWidth: 300,
+                    textDecoration: 'none',
+                    background: 'linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ed8936 100%)',
+                    color: '#ffffff',
+                    px: 6,
+                    py: 2.5,
+                    fontWeight: 700,
+                    letterSpacing: '0.05em',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                    boxShadow: '0 8px 30px rgba(251, 146, 60, 0.45)',
+                    borderRadius: 50,
+                    textTransform: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 0.25,
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 12px 40px rgba(251, 146, 60, 0.55)',
+                    },
+                  }}
+                >
+                  <Box
+                    component="span"
+                    sx={{
+                      fontSize: '1rem',
+                      lineHeight: 1.2,
+                      whiteSpace: 'nowrap',
+                      color: '#3d2817',
+                      textShadow: '0 1px 2px rgba(255,255,255,0.3)',
+                    }}
+                  >
+                    会員様はこちら
+                  </Box>
+                  <Box
+                    component="span"
+                    sx={{
+                      fontSize: '1.65rem',
+                      fontWeight: 800,
+                      lineHeight: 1.2,
+                      color: '#fff',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    ログイン
+                  </Box>
+                </Button>
                 <Box sx={{ flex: 1, minWidth: 300, position: 'relative', overflow: 'visible' }}>
                   <CTAButton variant="primary" size="large" fullWidth />
                 </Box>

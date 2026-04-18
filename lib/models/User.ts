@@ -7,6 +7,8 @@ export interface IUser {
   image?: string | null;
   emailVerified?: Date | null;
   role: 'admin' | 'user';
+  /** 0=フリー, 1=プロ（未設定はフリー扱い） */
+  plan?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,6 +22,7 @@ const UserSchema = new Schema<IUserDocument>(
     image: { type: String, default: null },
     emailVerified: { type: Date, default: null },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
+    plan: { type: Number, default: 0 },
   },
   {
     timestamps: true,

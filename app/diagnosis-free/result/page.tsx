@@ -23,6 +23,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LockIcon from '@mui/icons-material/Lock';
 import dynamic from 'next/dynamic';
 import { normalizeSimpleDiagnosisSummary } from '@/lib/diagnosisSimpleSummary';
+import ProUpgradeCtaRow from '@/app/components/ProUpgradeCtaRow';
 
 const DiagnosisRadarChart = dynamic(() => import('@/app/components/diagnosis/DiagnosisRadarChart'), { ssr: false });
 
@@ -257,9 +258,27 @@ export default function DiagnosisFreeResultPage() {
         </Card>
 
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>
-            詳細分析サマリー
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: { xs: 'flex-start', md: 'center' },
+              justifyContent: 'space-between',
+              gap: 2,
+              mb: 2,
+              flexWrap: { xs: 'wrap', md: 'nowrap' },
+              columnGap: 2,
+              rowGap: 1.5,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: 600, color: '#3d2c1e', flexShrink: 0 }}
+            >
+              詳細分析サマリー
+            </Typography>
+            <ProUpgradeCtaRow />
+          </Box>
           <Box sx={{ position: 'relative' }}>
             <Box
               sx={{

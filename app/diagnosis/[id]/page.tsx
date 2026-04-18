@@ -32,6 +32,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LockIcon from '@mui/icons-material/Lock';
 import dynamic from 'next/dynamic';
 import { normalizeSimpleDiagnosisSummary } from '@/lib/diagnosisSimpleSummary';
+import ProUpgradeCtaRow from '@/app/components/ProUpgradeCtaRow';
+import { PLAN_PRO } from '@/lib/plan';
 
 const DiagnosisRadarChart = dynamic(() => import('@/app/components/diagnosis/DiagnosisRadarChart'), {
   ssr: false,
@@ -96,6 +98,10 @@ interface DiagnosisDetail {
   careerRoadmap?: Record<string, string>;
   createdAt?: string;
   updatedAt?: string;
+  /** 閲覧者のプラン（0=フリー, 1=プロ）。API が付与 */
+  viewerPlan?: number;
+  /** ログインユーザーの DB プラン（モザイク解除とは独立。編集・削除はプロのみ） */
+  userPlan?: number;
 }
 
 export default function DiagnosisDetailPage() {
@@ -113,7 +119,9 @@ export default function DiagnosisDetailPage() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const res = await fetch(`/api/diagnosis/${id}`, { credentials: 'include' });
+        const res = await fetch(`/api/diagnosis/${id}`, {
+          credentials: 'include',
+        });
         const d = await res.json();
         if (process.env.NODE_ENV === 'development') {
           console.log('[診断詳細] GET response:', { status: res.status, ok: res.ok, id, data: d });
@@ -298,6 +306,9 @@ export default function DiagnosisDetailPage() {
     summary
   );
 
+  const showUnmasked = data.viewerPlan === PLAN_PRO;
+  const showEditDelete = data.userPlan === PLAN_PRO;
+
   return (
     <Box
       sx={{
@@ -421,18 +432,40 @@ export default function DiagnosisDetailPage() {
         </Card>
 
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#3d2c1e', mb: 2 }}>
-            詳細分析サマリー
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: { xs: 'flex-start', md: 'center' },
+              justifyContent: 'space-between',
+              gap: 2,
+              mb: 2,
+              flexWrap: { xs: 'wrap', md: 'nowrap' },
+              columnGap: 2,
+              rowGap: 1.5,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: 600, color: '#3d2c1e', flexShrink: 0 }}
+            >
+              詳細分析サマリー
+            </Typography>
+            {!showUnmasked ? <ProUpgradeCtaRow /> : null}
+          </Box>
           <Box sx={{ position: 'relative' }}>
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 3,
-                filter: 'blur(8px)',
-                pointerEvents: 'none',
-                userSelect: 'none',
+                ...(showUnmasked
+                  ? {}
+                  : {
+                      filter: 'blur(8px)',
+                      pointerEvents: 'none',
+                      userSelect: 'none',
+                    }),
               }}
             >
               <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(139, 90, 43, 0.08)' }}>
@@ -600,77 +633,82 @@ export default function DiagnosisDetailPage() {
               </CardContent>
             </Card>
             </Box>
-            <Box
-              sx={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                pt: { xs: 3, sm: 4 },
-                background: 'linear-gradient(180deg, rgba(255,251,245,0.6) 0%, rgba(255,247,237,0.85) 100%)',
-                borderRadius: 2,
-                px: 2,
-              }}
-            >
-              <LockIcon sx={{ fontSize: 44, color: '#8b5a2b', opacity: 0.85, mb: 0.75 }} />
-              <Typography
-                variant="body1"
+            {!showUnmasked ? (
+              <Box
                 sx={{
-                  fontWeight: 600,
-                  color: '#5c4033',
-                  textAlign: 'center',
-                  lineHeight: 1.55,
-                  whiteSpace: 'nowrap',
-                  fontSize: { xs: '0.6875rem', sm: '1rem' },
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  pt: { xs: 3, sm: 4 },
+                  background:
+                    'linear-gradient(180deg, rgba(255,251,245,0.6) 0%, rgba(255,247,237,0.85) 100%)',
+                  borderRadius: 2,
+                  px: 2,
                 }}
               >
-                有料版にアップグレードすると確認することができます
-              </Typography>
-            </Box>
+                <LockIcon sx={{ fontSize: 44, color: '#8b5a2b', opacity: 0.85, mb: 0.75 }} />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 600,
+                    color: '#5c4033',
+                    textAlign: 'center',
+                    lineHeight: 1.55,
+                    whiteSpace: 'nowrap',
+                    fontSize: { xs: '0.6875rem', sm: '1rem' },
+                  }}
+                >
+                  有料版にアップグレードすると確認することができます
+                </Typography>
+              </Box>
+            ) : null}
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <Link href={`/diagnosis/${id}/edit`} style={{ textDecoration: 'none' }}>
+        {showEditDelete ? (
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Link href={`/diagnosis/${id}/edit`} style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                sx={{
+                  width: 220,
+                  minHeight: 52,
+                  fontSize: '1.1rem',
+                  whiteSpace: 'nowrap',
+                  background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
+                  },
+                }}
+              >
+                編集
+              </Button>
+            </Link>
             <Button
-              variant="contained"
-              startIcon={<EditIcon />}
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={handleDelete}
+              disabled={deleting}
               sx={{
                 width: 220,
                 minHeight: 52,
                 fontSize: '1.1rem',
                 whiteSpace: 'nowrap',
-                background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
                 textTransform: 'none',
                 fontWeight: 600,
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
-                },
               }}
             >
-              編集
+              {deleting ? '削除中...' : '削除'}
             </Button>
-          </Link>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={handleDelete}
-            disabled={deleting}
-            sx={{
-              width: 220,
-              minHeight: 52,
-              fontSize: '1.1rem',
-              whiteSpace: 'nowrap',
-              textTransform: 'none',
-              fontWeight: 600,
-            }}
-          >
-            {deleting ? '削除中...' : '削除'}
-          </Button>
-        </Box>
+          </Box>
+        ) : null}
       </Container>
 
       {/* 削除エラーなど用のダイアログ */}
