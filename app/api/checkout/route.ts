@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { auth } from '@/lib/auth';
+import { getPublicAppUrl } from '@/lib/getPublicAppUrl';
 
 /**
  * Stripe のサーバー用クライアント（秘密鍵はサーバーでのみ使用）
@@ -34,11 +35,13 @@ export async function POST(req: Request) {
     const userEmail = session.user.email;
 
     // フロントと同じ「サイトのベース URL」（成功・キャンセル後の戻り先に使う）
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+    const appUrl = getPublicAppUrl();
     if (!appUrl) {
-      console.error('[checkout] NEXT_PUBLIC_APP_URL が未設定です');
+      console.error(
+        '[checkout] 公開 URL を解決できません。NEXT_PUBLIC_APP_URL または Vercel の VERCEL_URL 等を設定してください。'
+      );
       return NextResponse.json(
-        { error: 'サーバー設定（NEXT_PUBLIC_APP_URL）が不足しています。' },
+        { error: 'サーバー設定（公開サイトの URL）が不足しています。' },
         { status: 500 }
       );
     }
@@ -120,7 +123,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url });
   } catch (err) {
-    console.error('[checkout]', err);
+    if (err instanceof Stripe.errors.StripeError) {
+      console.error('[checkout] Stripe error:', err.type, err.code, err.message);
+    } else {
+      console.error('[checkout]', err);
+    }
     const message =
       err instanceof Error ? err.message : '決済セッションの作成に失敗しました。';
     return NextResponse.json({ error: message }, { status: 500 });
